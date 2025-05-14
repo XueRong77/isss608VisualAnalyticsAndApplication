@@ -18,7 +18,7 @@
     "href": "hands_on_exercise2.html#import-data",
     "title": "Hands-on Exercise 2: Beyond ggplot2 Fundamentals",
     "section": "Import Data",
-    "text": "Import Data\n\n# Read the exam data CSV\nexam_data &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "Import Data\n\n# Read the exam data CSV\nexam_data &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
   },
   {
     "objectID": "hands_on_exercise2.html#ggrepel-prevent-overlapping-labels",
@@ -53,14 +53,14 @@
     "href": "hands-on_exercise3_a.html",
     "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
     "section": "",
-    "text": "# Read CSV file\nexam_data &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "# Read CSV file\nexam_data &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
   },
   {
     "objectID": "hands-on_exercise3_a.html#importing-data",
     "href": "hands-on_exercise3_a.html#importing-data",
     "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
     "section": "",
-    "text": "# Read CSV file\nexam_data &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "# Read CSV file\nexam_data &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
   },
   {
     "objectID": "hands-on_exercise3_a.html#tooltip-with-id-ggiraph",
@@ -151,14 +151,14 @@
     "href": "hands-on_exercise4d.html",
     "title": "Funnel Plot for COVID-19 in DKI Jakarta",
     "section": "",
-    "text": "covid19 &lt;- read_csv(\"hands-on_exercise4/COVID-19_DKI_Jakarta.csv\") %&gt;%\n  mutate_if(is.character, as.factor)\n\nRows: 267 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (3): City, District, Sub-district\ndbl (4): Sub-district ID, Positive, Recovered, Death\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "covid19 &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise4/COVID-19_DKI_Jakarta.csv\") %&gt;%\n  mutate_if(is.character, as.factor)\n\nRows: 267 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (3): City, District, Sub-district\ndbl (4): Sub-district ID, Positive, Recovered, Death\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
   },
   {
     "objectID": "hands-on_exercise4d.html#importing-data",
     "href": "hands-on_exercise4d.html#importing-data",
     "title": "Funnel Plot for COVID-19 in DKI Jakarta",
     "section": "",
-    "text": "covid19 &lt;- read_csv(\"hands-on_exercise4/COVID-19_DKI_Jakarta.csv\") %&gt;%\n  mutate_if(is.character, as.factor)\n\nRows: 267 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (3): City, District, Sub-district\ndbl (4): Sub-district ID, Positive, Recovered, Death\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "covid19 &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise4/COVID-19_DKI_Jakarta.csv\") %&gt;%\n  mutate_if(is.character, as.factor)\n\nRows: 267 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (3): City, District, Sub-district\ndbl (4): Sub-district ID, Positive, Recovered, Death\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
   },
   {
     "objectID": "hands-on_exercise4d.html#funnelplotr-methods",
@@ -193,7 +193,7 @@
     "href": "hands-on_exercise4c.html#getting-started",
     "title": "Hands-on Exercise 4c: Visualising Uncertainty",
     "section": "11.2 Getting Started",
-    "text": "11.2 Getting Started\n\n11.2.1 Installing and Loading Packages\n\npacman::p_load(plotly, crosstalk, DT, \n               ggdist, ggridges, colorspace,\n               gganimate, tidyverse)\n\n\n\n11.2.2 Importing the Data\n\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "11.2 Getting Started\n\n11.2.1 Installing and Loading Packages\n\npacman::p_load(plotly, crosstalk, DT, \n               ggdist, ggridges, colorspace,\n               gganimate, tidyverse)\n\n\n\n11.2.2 Importing the Data\n\nexam &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
   },
   {
     "objectID": "hands-on_exercise4c.html#visualizing-the-uncertainty-of-point-estimates",
@@ -298,14 +298,14 @@
     "href": "hands-on_exercise4a.html",
     "title": "Hands-on Exercise 4: Visualising Distribution",
     "section": "",
-    "text": "# Load necessary packages\npacman::p_load(ggdist, ggridges, ggthemes, colorspace, tidyverse)\n\n# Import dataset\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "# Load necessary packages\npacman::p_load(ggdist, ggridges, ggthemes, colorspace, tidyverse)\n\n# Import dataset\nexam &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
   },
   {
     "objectID": "hands-on_exercise4a.html#setup",
     "href": "hands-on_exercise4a.html#setup",
     "title": "Hands-on Exercise 4: Visualising Distribution",
     "section": "",
-    "text": "# Load necessary packages\npacman::p_load(ggdist, ggridges, ggthemes, colorspace, tidyverse)\n\n# Import dataset\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "# Load necessary packages\npacman::p_load(ggdist, ggridges, ggthemes, colorspace, tidyverse)\n\n# Import dataset\nexam &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
   },
   {
     "objectID": "hands-on_exercise4a.html#ridgeline-plots",
@@ -326,14 +326,14 @@
     "href": "hands-on_exercise4b.html",
     "title": "Hands-on Exercise 4: Visual Statistical Analysis",
     "section": "",
-    "text": "# Read in the Exam.csv file\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n# View the structure of the dataset\nglimpse(exam)\n\nRows: 322\nColumns: 7\n$ ID      &lt;chr&gt; \"Student321\", \"Student305\", \"Student289\", \"Student227\", \"Stude…\n$ CLASS   &lt;chr&gt; \"3I\", \"3I\", \"3H\", \"3F\", \"3I\", \"3I\", \"3I\", \"3I\", \"3I\", \"3H\", \"3…\n$ GENDER  &lt;chr&gt; \"Male\", \"Female\", \"Male\", \"Male\", \"Male\", \"Female\", \"Male\", \"M…\n$ RACE    &lt;chr&gt; \"Malay\", \"Malay\", \"Chinese\", \"Chinese\", \"Malay\", \"Malay\", \"Chi…\n$ ENGLISH &lt;dbl&gt; 21, 24, 26, 27, 27, 31, 31, 31, 33, 34, 34, 36, 36, 36, 37, 38…\n$ MATHS   &lt;dbl&gt; 9, 22, 16, 77, 11, 16, 21, 18, 19, 49, 39, 35, 23, 36, 49, 30,…\n$ SCIENCE &lt;dbl&gt; 15, 16, 16, 31, 25, 16, 25, 27, 15, 37, 42, 22, 32, 36, 35, 45…"
+    "text": "# Read in the Exam.csv file\nexam &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n# View the structure of the dataset\nglimpse(exam)\n\nRows: 322\nColumns: 7\n$ ID      &lt;chr&gt; \"Student321\", \"Student305\", \"Student289\", \"Student227\", \"Stude…\n$ CLASS   &lt;chr&gt; \"3I\", \"3I\", \"3H\", \"3F\", \"3I\", \"3I\", \"3I\", \"3I\", \"3I\", \"3H\", \"3…\n$ GENDER  &lt;chr&gt; \"Male\", \"Female\", \"Male\", \"Male\", \"Male\", \"Female\", \"Male\", \"M…\n$ RACE    &lt;chr&gt; \"Malay\", \"Malay\", \"Chinese\", \"Chinese\", \"Malay\", \"Malay\", \"Chi…\n$ ENGLISH &lt;dbl&gt; 21, 24, 26, 27, 27, 31, 31, 31, 33, 34, 34, 36, 36, 36, 37, 38…\n$ MATHS   &lt;dbl&gt; 9, 22, 16, 77, 11, 16, 21, 18, 19, 49, 39, 35, 23, 36, 49, 30,…\n$ SCIENCE &lt;dbl&gt; 15, 16, 16, 31, 25, 16, 25, 27, 15, 37, 42, 22, 32, 36, 35, 45…"
   },
   {
     "objectID": "hands-on_exercise4b.html#importing-data",
     "href": "hands-on_exercise4b.html#importing-data",
     "title": "Hands-on Exercise 4: Visual Statistical Analysis",
     "section": "",
-    "text": "# Read in the Exam.csv file\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n# View the structure of the dataset\nglimpse(exam)\n\nRows: 322\nColumns: 7\n$ ID      &lt;chr&gt; \"Student321\", \"Student305\", \"Student289\", \"Student227\", \"Stude…\n$ CLASS   &lt;chr&gt; \"3I\", \"3I\", \"3H\", \"3F\", \"3I\", \"3I\", \"3I\", \"3I\", \"3I\", \"3H\", \"3…\n$ GENDER  &lt;chr&gt; \"Male\", \"Female\", \"Male\", \"Male\", \"Male\", \"Female\", \"Male\", \"M…\n$ RACE    &lt;chr&gt; \"Malay\", \"Malay\", \"Chinese\", \"Chinese\", \"Malay\", \"Malay\", \"Chi…\n$ ENGLISH &lt;dbl&gt; 21, 24, 26, 27, 27, 31, 31, 31, 33, 34, 34, 36, 36, 36, 37, 38…\n$ MATHS   &lt;dbl&gt; 9, 22, 16, 77, 11, 16, 21, 18, 19, 49, 39, 35, 23, 36, 49, 30,…\n$ SCIENCE &lt;dbl&gt; 15, 16, 16, 31, 25, 16, 25, 27, 15, 37, 42, 22, 32, 36, 35, 45…"
+    "text": "# Read in the Exam.csv file\nexam &lt;- read_csv(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n# View the structure of the dataset\nglimpse(exam)\n\nRows: 322\nColumns: 7\n$ ID      &lt;chr&gt; \"Student321\", \"Student305\", \"Student289\", \"Student227\", \"Stude…\n$ CLASS   &lt;chr&gt; \"3I\", \"3I\", \"3H\", \"3F\", \"3I\", \"3I\", \"3I\", \"3I\", \"3I\", \"3H\", \"3…\n$ GENDER  &lt;chr&gt; \"Male\", \"Female\", \"Male\", \"Male\", \"Male\", \"Female\", \"Male\", \"M…\n$ RACE    &lt;chr&gt; \"Malay\", \"Malay\", \"Chinese\", \"Chinese\", \"Malay\", \"Malay\", \"Chi…\n$ ENGLISH &lt;dbl&gt; 21, 24, 26, 27, 27, 31, 31, 31, 33, 34, 34, 36, 36, 36, 37, 38…\n$ MATHS   &lt;dbl&gt; 9, 22, 16, 77, 11, 16, 21, 18, 19, 49, 39, 35, 23, 36, 49, 30,…\n$ SCIENCE &lt;dbl&gt; 15, 16, 16, 31, 25, 16, 25, 27, 15, 37, 42, 22, 32, 36, 35, 45…"
   },
   {
     "objectID": "hands-on_exercise4b.html#one-sample-test-on-english-scores",
@@ -396,7 +396,7 @@
     "href": "hands-on_exercise3_b.html#importing-the-data",
     "title": "Animated Statistical Graphics with R",
     "section": "Importing the Data",
-    "text": "Importing the Data\n\n# Define the columns to convert to factor\ncol &lt;- c(\"Country\", \"Continent\")\n\n# Read the Excel file and wrangle the data\nglobalPop &lt;- read_xls(\"hands-on_exercise3/GlobalPopulation.xls\",\n                      sheet = \"Data\") %&gt;%\n  mutate(across(all_of(col), as.factor)) %&gt;%\n  mutate(Year = as.integer(Year))"
+    "text": "Importing the Data\n\n# Define the columns to convert to factor\ncol &lt;- c(\"Country\", \"Continent\")\n\n# Read the Excel file and wrangle the data\nglobalPop &lt;- read_xls(\"/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise3/GlobalPopulation.xls\",\n                      sheet = \"Data\") %&gt;%\n  mutate(across(all_of(col), as.factor)) %&gt;%\n  mutate(Year = as.integer(Year))"
   },
   {
     "objectID": "hands-on_exercise3_b.html#static-bubble-plot-with-ggplot2",
@@ -431,7 +431,7 @@
     "href": "hands-on_exercise1.html",
     "title": "Hands-On Exercise 1: Grammar of Graphics with ggplot2",
     "section": "",
-    "text": "# Load required packages\ninstall.packages(\"pacman\", repos = \"https://cloud.r-project.org/\")\n\n\nThe downloaded binary packages are in\n    /var/folders/fw/r5v73g5d55xfr_hq4n78p6rr0000gn/T//Rtmpp5PIJb/downloaded_packages\n\npacman::p_load(tidyverse)\n# Load the data\n#install.packages(\"readr\")\n\nlibrary(readr)\n\nexam_data &lt;- read_csv(\"hands-on_exercise1/data/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+    "text": "# Load required packages\ninstall.packages(\"pacman\", repos = \"https://cloud.r-project.org/\")\n\n\nThe downloaded binary packages are in\n    /var/folders/fw/r5v73g5d55xfr_hq4n78p6rr0000gn/T//RtmpmAA0xd/downloaded_packages\n\npacman::p_load(tidyverse)\n# Load the data\n#install.packages(\"readr\")\n\nlibrary(readr)\n\nexam_data &lt;- read_csv(\"hands-on_exercise1/data/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
   },
   {
     "objectID": "hands-on_exercise1.html#r-graphics-vs-ggplot",
