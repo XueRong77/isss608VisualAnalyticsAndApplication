@@ -1,0 +1,218 @@
+---
+title: "Hands-On Exercise 1: Grammar of Graphics with ggplot2"
+author: "Zhang Xuerong"
+format: html
+editor: visual
+---
+
+```{r}
+# Load required packages
+install.packages("pacman", repos = "https://cloud.r-project.org/")
+pacman::p_load(tidyverse)
+```
+
+```{r}
+# Load the data
+#install.packages("readr")
+
+library(readr)
+
+exam_data <- read_csv("hands-on_exercise1/data/Exam_data.csv")
+```
+
+## R Graphics VS ggplot
+
+```{r}
+#install.packages("ggplot2")  # run only if not installed
+library(ggplot2)
+
+ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_histogram(bins=10, 
+                 boundary = 100,
+                 color="black", 
+                 fill="grey") +
+  ggtitle("Distribution of Maths scores")
+```
+
+
+```{r}
+hist(exam_data$MATHS)
+```
+
+## Geometric Objects
+
+### Bar Chart
+
+```{r}
+ggplot(data = exam_data, aes(x = RACE)) + 
+  geom_bar()
+```
+
+### Dot Plot
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_dotplot(binwidth = 2.5, dotsize = 0.5) +
+  scale_y_continuous(NULL, breaks = NULL)
+```
+
+### Histogram
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram()
+```
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram(bins = 20, fill = "light blue", color = "black")
+```
+
+### Histogram by Gender
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS, fill = GENDER)) +
+  geom_histogram(bins = 20, color = "grey30")
+```
+
+### Density Plot
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_density()
+```
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS, colour = GENDER)) +
+  geom_density()
+```
+
+### Boxplot
+
+```{r}
+ggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +
+  geom_boxplot()
+```
+
+```{r}
+ggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +
+  geom_boxplot(notch = TRUE)
+```
+
+### Violin Plot
+
+```{r}
+ggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +
+  geom_violin()
+```
+
+### Scatterplot
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +
+  geom_point()
+```
+
+### Boxplot + Points
+
+```{r}
+ggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +
+  geom_boxplot() +
+  geom_point(position = "jitter", size = 0.5)
+```
+
+### Boxplot with Mean (stat_summary)
+
+```{r}
+ggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +
+  geom_boxplot() +
+  stat_summary(fun = "mean", geom = "point", colour = "red", size = 4)
+```
+
+### Boxplot with Mean (geom_point)
+
+```{r}
+ggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +
+  geom_boxplot() +
+  geom_point(stat = "summary", fun = "mean", colour = "red", size = 4)
+```
+
+### Scatterplot with Smooth Line
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +
+  geom_point() +
+  geom_smooth(size = 0.5)
+```
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +
+  geom_point() +
+  geom_smooth(method = lm, linewidth = 0.5)
+```
+
+## Facets
+
+### facet_wrap()
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram(bins = 20) +
+  facet_wrap(~CLASS)
+```
+
+### facet_grid()
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram(bins = 20) +
+  facet_grid(~CLASS)
+```
+
+## Coordinate Systems
+
+### Horizontal Bar Chart
+
+```{r}
+ggplot(data = exam_data, aes(x = RACE)) +
+  geom_bar() +
+  coord_flip()
+```
+
+### Fix Axis Limits
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +
+  geom_point() +
+  geom_smooth(method = lm, size = 0.5) +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100))
+```
+
+## Themes
+
+### theme_gray (default)
+
+```{r}
+ggplot(data = exam_data, aes(x = RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_gray()
+```
+
+### theme_classic
+
+```{r}
+ggplot(data = exam_data, aes(x = RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_classic()
+```
+
+### theme_minimal
+
+```{r}
+ggplot(data = exam_data, aes(x = RACE)) +
+  geom_bar() +
+  coord_flip() +
+  theme_minimal()
+```

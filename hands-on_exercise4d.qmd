@@ -1,0 +1,113 @@
+---
+title: "Funnel Plot for COVID-19 in DKI Jakarta"
+author: "Your Name"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+pacman::p_load(tidyverse, FunnelPlotR, plotly, knitr)
+```
+
+## 1. Importing Data
+
+```{r}
+covid19 <- read_csv("/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise4/COVID-19_DKI_Jakarta.csv") %>%
+  mutate_if(is.character, as.factor)
+```
+
+## 2. FunnelPlotR Methods
+
+### 2.1 Basic Funnel Plot
+
+```{r}
+funnel_plot(
+  .data = covid19,
+  numerator = Positive,
+  denominator = Death,
+  group = `Sub-district`
+)
+```
+
+### 2.2 Makeover 1: Proportions
+
+```{r}
+funnel_plot(
+  .data = covid19,
+  numerator = Death,
+  denominator = Positive,
+  group = `Sub-district`,
+  data_type = "PR",
+  xrange = c(0, 6500),
+  yrange = c(0, 0.05)
+)
+```
+
+### 2.3 Makeover 2: Customized Plot
+
+```{r}
+funnel_plot(
+  .data = covid19,
+  numerator = Death,
+  denominator = Positive,
+  group = `Sub-district`,
+  data_type = "PR",
+  xrange = c(0, 6500),
+  yrange = c(0, 0.05),
+  label = NA,
+  title = "Cumulative COVID-19 Fatality Rate by Cumulative Total Number of COVID-19 Positive Cases",
+  x_label = "Cumulative COVID-19 Positive Cases",
+  y_label = "Cumulative Fatality Rate"
+)
+```
+
+## 3. ggplot2 Funnel Plot
+
+### 3.1 Compute Rate & SE
+
+```{r}
+df <- covid19 %>%
+  mutate(rate = Death / Positive) %>%
+  mutate(rate.se = sqrt((rate * (1 - rate)) / Positive)) %>%
+  filter(rate > 0)
+
+fit.mean <- weighted.mean(df$rate, 1 / df$rate.se^2)
+```
+
+### 3.2 Compute Confidence Intervals
+
+```{r}
+number.seq <- seq(1, max(df$Positive), 1)
+number.ll95 <- fit.mean - 1.96 * sqrt((fit.mean * (1 - fit.mean)) / number.seq)
+number.ul95 <- fit.mean + 1.96 * sqrt((fit.mean * (1 - fit.mean)) / number.seq)
+number.ll999 <- fit.mean - 3.29 * sqrt((fit.mean * (1 - fit.mean)) / number.seq)
+number.ul999 <- fit.mean + 3.29 * sqrt((fit.mean * (1 - fit.mean)) / number.seq)
+
+dfCI <- data.frame(number.ll95, number.ul95, number.ll999, number.ul999, number.seq, fit.mean)
+```
+
+### 3.3 Static Funnel Plot
+
+```{r}
+p <- ggplot(df, aes(x = Positive, y = rate)) +
+  geom_point(aes(label = `Sub-district`), alpha = 0.4) +
+  geom_line(data = dfCI, aes(x = number.seq, y = number.ll95), colour = "grey40", linetype = "dashed") +
+  geom_line(data = dfCI, aes(x = number.seq, y = number.ul95), colour = "grey40", linetype = "dashed") +
+  geom_line(data = dfCI, aes(x = number.seq, y = number.ll999), colour = "grey40") +
+  geom_line(data = dfCI, aes(x = number.seq, y = number.ul999), colour = "grey40") +
+  geom_hline(aes(yintercept = fit.mean), colour = "grey40") +
+  coord_cartesian(ylim = c(0, 0.05)) +
+  ggtitle("Cumulative Fatality Rate by Cumulative Number of COVID-19 Cases") +
+  xlab("Cumulative Number of COVID-19 Cases") +
+  ylab("Cumulative Fatality Rate") +
+  theme_light()
+p
+```
+
+### 3.4 Interactive Funnel Plot
+
+```{r}
+ggplotly(p, tooltip = c("label", "x", "y"))
+```
+
+---

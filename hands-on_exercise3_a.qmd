@@ -1,0 +1,244 @@
+---
+title: "Hands-On Exercise 3: Interactive Data Visualisation in R"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+# Load required packages
+pacman::p_load(ggiraph, plotly, patchwork, DT, tidyverse, crosstalk, htmltools, ggiraph.extra)
+
+
+```
+
+## Importing Data
+
+```{r}
+# Read CSV file
+exam_data <- read_csv("/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv")
+```
+
+## Tooltip with ID (ggiraph)
+
+```{r}
+p <- ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_dotplot_interactive(
+    aes(tooltip = ID),
+    stackgroups = TRUE,
+    binwidth = 1,
+    method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p, width_svg = 6, height_svg = 6 * 0.618)
+```
+
+## Tooltip with ID and CLASS
+
+```{r}
+exam_data$tooltip <- paste0("Name = ", exam_data$ID, "\nClass = ", exam_data$CLASS)
+
+p <- ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_dotplot_interactive(aes(tooltip = tooltip),
+                           stackgroups = TRUE,
+                           binwidth = 1,
+                           method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p, width_svg = 8, height_svg = 8 * 0.618)
+```
+
+## Customising Tooltip Style
+
+```{r}
+tooltip_css <- "background-color:white; font-style:bold; color:black;"
+
+p <- ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_dotplot_interactive(aes(tooltip = ID),
+                           stackgroups = TRUE,
+                           binwidth = 1,
+                           method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p,
+       width_svg = 6,
+       height_svg = 6 * 0.618,
+       options = list(opts_tooltip(css = tooltip_css)))
+```
+
+## Tooltip with Summary Statistics
+
+```{r}
+tooltip <- function(y, ymax, accuracy = .01) {
+  mean <- scales::number(y, accuracy = accuracy)
+  sem <- scales::number(ymax - y, accuracy = accuracy)
+  paste("Mean maths scores:", mean, "+/-", sem)
+}
+
+gg_point <- ggplot(data=exam_data, aes(x = RACE)) +
+  stat_summary(aes(y = MATHS, tooltip = after_stat(tooltip(y, ymax))),
+               fun.data = "mean_se",
+               geom = GeomInteractiveCol,
+               fill = "lightblue") +
+  stat_summary(aes(y = MATHS),
+               fun.data = mean_se,
+               geom = "errorbar", width = 0.2, size = 0.2)
+
+girafe(ggobj = gg_point, width_svg = 8, height_svg = 8 * 0.618)
+```
+
+## Hover Effect (data_id)
+
+```{r}
+p <- ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_dotplot_interactive(aes(data_id = CLASS),
+                           stackgroups = TRUE,
+                           binwidth = 1,
+                           method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p, width_svg = 6, height_svg = 6 * 0.618)
+```
+
+## Custom Hover Style
+
+```{r}
+p <- ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_dotplot_interactive(aes(data_id = CLASS),
+                           stackgroups = TRUE,
+                           binwidth = 1,
+                           method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p,
+       width_svg = 6,
+       height_svg = 6 * 0.618,
+       options = list(
+         opts_hover(css = "fill: #202020;"),
+         opts_hover_inv(css = "opacity:0.2;")
+       ))
+```
+
+## Tooltip + Hover Combined
+
+```{r}
+p <- ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_dotplot_interactive(aes(tooltip = CLASS, data_id = CLASS),
+                           stackgroups = TRUE,
+                           binwidth = 1,
+                           method = "histodot") +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p,
+       width_svg = 6,
+       height_svg = 6 * 0.618,
+       options = list(
+         opts_hover(css = "fill: #202020;"),
+         opts_hover_inv(css = "opacity:0.2;")
+       ))
+```
+
+## Click Effect
+
+```{r}
+exam_data$onclick <- sprintf("window.open(\"%s%s\")", 
+                             "https://www.moe.gov.sg/schoolfinder?journey=Primary%20school", 
+                             as.character(exam_data$ID))
+
+p <- ggplot(data = exam_data, aes(x = MATHS, y = 0)) +
+  geom_point_interactive(aes(tooltip = ID), position = position_jitter(height = 0.1)) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(ggobj = p, width_svg = 6, height_svg = 6 * 0.618)
+```
+
+## Coordinated Multiple Views (ggiraph + patchwork)
+
+```{r}
+p1 <- ggplot(data=exam_data, aes(x = MATHS)) +
+  geom_dotplot_interactive(aes(data_id = ID),
+                           stackgroups = TRUE,
+                           binwidth = 1,
+                           method = "histodot") +
+  coord_cartesian(xlim = c(0,100)) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+p2 <- ggplot(data=exam_data, aes(x = ENGLISH)) +
+  geom_dotplot_interactive(aes(data_id = ID),
+                           stackgroups = TRUE,
+                           binwidth = 1,
+                           method = "histodot") +
+  coord_cartesian(xlim = c(0,100)) +
+  scale_y_continuous(NULL, breaks = NULL)
+
+girafe(code = print(p1 + p2),
+       width_svg = 6,
+       height_svg = 3,
+       options = list(
+         opts_hover(css = "fill: #202020;"),
+         opts_hover_inv(css = "opacity:0.2;")
+       ))
+```
+
+## Interactive Plots with plotly
+
+```{r}
+plot_ly(data = exam_data, 
+        x = ~ENGLISH, 
+        y = ~MATHS, 
+        type = "scatter", 
+        mode = "markers")
+```
+
+```{r}
+plot_ly(data = exam_data, 
+        x = ~ENGLISH, 
+        y = ~MATHS, 
+        color = ~RACE,
+        type = "scatter", 
+        mode = "markers")
+```
+
+```{r}
+gg <- ggplot(data = exam_data, aes(x = ENGLISH, y = MATHS, color = RACE)) +
+  geom_point()
+
+ggplotly(gg)
+```
+
+```{r}
+shared_exam <- highlight_key(exam_data)
+
+p1 <- ggplot(shared_exam, aes(x = ENGLISH, y = MATHS, color = RACE)) +
+  geom_point()
+
+p2 <- ggplot(shared_exam, aes(x = MATHS, y = SCIENCE, color = RACE)) +
+  geom_point()
+
+subplot(ggplotly(p1), ggplotly(p2), nrows = 1) %>%
+  highlight("plotly_selected", dynamic = TRUE)
+```
+
+## Interactive Data Table with DT + Crosstalk
+
+```{r}
+datatable(shared_exam, class = "compact", extensions = "Scroller", options = list(scrollY = 200))
+```
+
+## Linked Plot + Table (Brushing via Crosstalk)
+
+```{r}
+d <- highlight_key(exam_data) 
+p <- ggplot(d, 
+            aes(ENGLISH, 
+                MATHS)) + 
+  geom_point(size=1) +
+  coord_cartesian(xlim=c(0,100),
+                  ylim=c(0,100))
+
+gg <- highlight(ggplotly(p),        
+                "plotly_selected")  
+
+crosstalk::bscols(gg,               
+                  DT::datatable(d), 
+                  widths = 5)        
+```

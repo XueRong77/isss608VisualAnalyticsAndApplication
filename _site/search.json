@@ -1,0 +1,471 @@
+[
+  {
+    "objectID": "hands_on_exercise2.html",
+    "href": "hands_on_exercise2.html",
+    "title": "Hands-on Exercise 2: Beyond ggplot2 Fundamentals",
+    "section": "",
+    "text": "# Install and load necessary packages\npacman::p_load(\n  tidyverse, ggrepel, ggthemes, hrbrthemes, patchwork\n)"
+  },
+  {
+    "objectID": "hands_on_exercise2.html#setup",
+    "href": "hands_on_exercise2.html#setup",
+    "title": "Hands-on Exercise 2: Beyond ggplot2 Fundamentals",
+    "section": "",
+    "text": "# Install and load necessary packages\npacman::p_load(\n  tidyverse, ggrepel, ggthemes, hrbrthemes, patchwork\n)"
+  },
+  {
+    "objectID": "hands_on_exercise2.html#import-data",
+    "href": "hands_on_exercise2.html#import-data",
+    "title": "Hands-on Exercise 2: Beyond ggplot2 Fundamentals",
+    "section": "Import Data",
+    "text": "Import Data\n\n# Read the exam data CSV\nexam_data &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "hands_on_exercise2.html#ggrepel-prevent-overlapping-labels",
+    "href": "hands_on_exercise2.html#ggrepel-prevent-overlapping-labels",
+    "title": "Hands-on Exercise 2: Beyond ggplot2 Fundamentals",
+    "section": "ggrepel: Prevent Overlapping Labels",
+    "text": "ggrepel: Prevent Overlapping Labels\n\nggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(method = lm, size = 0.5) +\n  geom_label_repel(aes(label = ID), fontface = \"bold\") +\n  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +\n  ggtitle(\"English scores versus Maths scores for Primary 3\")\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\nWarning: ggrepel: 317 unlabeled data points (too many overlaps). Consider\nincreasing max.overlaps"
+  },
+  {
+    "objectID": "hands_on_exercise2.html#ggthemes-using-predefined-themes",
+    "href": "hands_on_exercise2.html#ggthemes-using-predefined-themes",
+    "title": "Hands-on Exercise 2: Beyond ggplot2 Fundamentals",
+    "section": "ggthemes: Using Predefined Themes",
+    "text": "ggthemes: Using Predefined Themes\n\nBase ggplot2 Theme\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_histogram(bins = 20, boundary = 100, color = \"grey25\", fill = \"grey90\") +\n  theme_gray() +\n  ggtitle(\"Distribution of Maths scores\")\n\n\n\n\n\n\n\n\n\n\nEconomist Theme\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_histogram(bins = 20, boundary = 100, color = \"grey25\", fill = \"grey90\") +\n  ggtitle(\"Distribution of Maths scores\") +\n  theme_economist()"
+  },
+  {
+    "objectID": "hands_on_exercise2.html#hrbrthemes-typography-centric-themes",
+    "href": "hands_on_exercise2.html#hrbrthemes-typography-centric-themes",
+    "title": "Hands-on Exercise 2: Beyond ggplot2 Fundamentals",
+    "section": "hrbrthemes: Typography-Centric Themes",
+    "text": "hrbrthemes: Typography-Centric Themes\n\nDefault hrbrthemes\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_histogram(bins = 20, boundary = 100, color = \"grey25\", fill = \"grey90\") +\n  ggtitle(\"Distribution of Maths scores\") +\n  theme_ipsum()\n\n\n\n\n\n\n\n\n\n\nCustomized Typography and Grid\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_histogram(bins = 20, boundary = 100, color = \"grey25\", fill = \"grey90\") +\n  ggtitle(\"Distribution of Maths scores\") +\n  theme_ipsum(axis_title_size = 18, base_size = 15, grid = \"Y\")"
+  },
+  {
+    "objectID": "hands_on_exercise2.html#composite-figures-with-patchwork",
+    "href": "hands_on_exercise2.html#composite-figures-with-patchwork",
+    "title": "Hands-on Exercise 2: Beyond ggplot2 Fundamentals",
+    "section": "Composite Figures with Patchwork",
+    "text": "Composite Figures with Patchwork\n\nCreate Individual Plots\n\np1 &lt;- ggplot(data = exam_data, aes(x = MATHS)) +\n  geom_histogram(bins = 20, boundary = 100, color = \"grey25\", fill = \"grey90\") +\n  coord_cartesian(xlim = c(0, 100)) +\n  ggtitle(\"Distribution of Maths scores\")\n\np2 &lt;- ggplot(data = exam_data, aes(x = ENGLISH)) +\n  geom_histogram(bins = 20, boundary = 100, color = \"grey25\", fill = \"grey90\") +\n  coord_cartesian(xlim = c(0, 100)) +\n  ggtitle(\"Distribution of English scores\")\n\np3 &lt;- ggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(method = lm, size = 0.5) +\n  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +\n  ggtitle(\"English scores versus Maths scores for Primary 3\")\n\n\n\nCombine Two Plots Horizontally\n\np1 + p2\n\n\n\n\n\n\n\n\n\n\nCombine Three Plots in Layout\n\n(p1 / p2) | p3\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\n\n\nAdd Auto-Tagging to Composite Plot\n\n((p1 / p2) | p3) + \n  plot_annotation(tag_levels = 'I')\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\n\n\nAdd Inset Plot\n\np3 + inset_element(p2, left = 0.02, bottom = 0.7, right = 0.5, top = 1)\n\n`geom_smooth()` using formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\n\n\nCombine Patchwork with ggthemes\n\npatchwork &lt;- (p1 / p2) | p3\npatchwork & theme_economist()\n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html",
+    "href": "hands-on_exercise3_a.html",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "",
+    "text": "# Read CSV file\nexam_data &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#importing-data",
+    "href": "hands-on_exercise3_a.html#importing-data",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "",
+    "text": "# Read CSV file\nexam_data &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#tooltip-with-id-ggiraph",
+    "href": "hands-on_exercise3_a.html#tooltip-with-id-ggiraph",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Tooltip with ID (ggiraph)",
+    "text": "Tooltip with ID (ggiraph)\n\np &lt;- ggplot(data=exam_data, aes(x = MATHS)) +\n  geom_dotplot_interactive(\n    aes(tooltip = ID),\n    stackgroups = TRUE,\n    binwidth = 1,\n    method = \"histodot\") +\n  scale_y_continuous(NULL, breaks = NULL)\n\ngirafe(ggobj = p, width_svg = 6, height_svg = 6 * 0.618)"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#tooltip-with-id-and-class",
+    "href": "hands-on_exercise3_a.html#tooltip-with-id-and-class",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Tooltip with ID and CLASS",
+    "text": "Tooltip with ID and CLASS\n\nexam_data$tooltip &lt;- paste0(\"Name = \", exam_data$ID, \"\\nClass = \", exam_data$CLASS)\n\np &lt;- ggplot(data=exam_data, aes(x = MATHS)) +\n  geom_dotplot_interactive(aes(tooltip = tooltip),\n                           stackgroups = TRUE,\n                           binwidth = 1,\n                           method = \"histodot\") +\n  scale_y_continuous(NULL, breaks = NULL)\n\ngirafe(ggobj = p, width_svg = 8, height_svg = 8 * 0.618)"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#customising-tooltip-style",
+    "href": "hands-on_exercise3_a.html#customising-tooltip-style",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Customising Tooltip Style",
+    "text": "Customising Tooltip Style\n\ntooltip_css &lt;- \"background-color:white; font-style:bold; color:black;\"\n\np &lt;- ggplot(data=exam_data, aes(x = MATHS)) +\n  geom_dotplot_interactive(aes(tooltip = ID),\n                           stackgroups = TRUE,\n                           binwidth = 1,\n                           method = \"histodot\") +\n  scale_y_continuous(NULL, breaks = NULL)\n\ngirafe(ggobj = p,\n       width_svg = 6,\n       height_svg = 6 * 0.618,\n       options = list(opts_tooltip(css = tooltip_css)))"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#tooltip-with-summary-statistics",
+    "href": "hands-on_exercise3_a.html#tooltip-with-summary-statistics",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Tooltip with Summary Statistics",
+    "text": "Tooltip with Summary Statistics\n\ntooltip &lt;- function(y, ymax, accuracy = .01) {\n  mean &lt;- scales::number(y, accuracy = accuracy)\n  sem &lt;- scales::number(ymax - y, accuracy = accuracy)\n  paste(\"Mean maths scores:\", mean, \"+/-\", sem)\n}\n\ngg_point &lt;- ggplot(data=exam_data, aes(x = RACE)) +\n  stat_summary(aes(y = MATHS, tooltip = after_stat(tooltip(y, ymax))),\n               fun.data = \"mean_se\",\n               geom = GeomInteractiveCol,\n               fill = \"lightblue\") +\n  stat_summary(aes(y = MATHS),\n               fun.data = mean_se,\n               geom = \"errorbar\", width = 0.2, size = 0.2)\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\ngirafe(ggobj = gg_point, width_svg = 8, height_svg = 8 * 0.618)"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#hover-effect-data_id",
+    "href": "hands-on_exercise3_a.html#hover-effect-data_id",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Hover Effect (data_id)",
+    "text": "Hover Effect (data_id)\n\np &lt;- ggplot(data=exam_data, aes(x = MATHS)) +\n  geom_dotplot_interactive(aes(data_id = CLASS),\n                           stackgroups = TRUE,\n                           binwidth = 1,\n                           method = \"histodot\") +\n  scale_y_continuous(NULL, breaks = NULL)\n\ngirafe(ggobj = p, width_svg = 6, height_svg = 6 * 0.618)"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#custom-hover-style",
+    "href": "hands-on_exercise3_a.html#custom-hover-style",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Custom Hover Style",
+    "text": "Custom Hover Style\n\np &lt;- ggplot(data=exam_data, aes(x = MATHS)) +\n  geom_dotplot_interactive(aes(data_id = CLASS),\n                           stackgroups = TRUE,\n                           binwidth = 1,\n                           method = \"histodot\") +\n  scale_y_continuous(NULL, breaks = NULL)\n\ngirafe(ggobj = p,\n       width_svg = 6,\n       height_svg = 6 * 0.618,\n       options = list(\n         opts_hover(css = \"fill: #202020;\"),\n         opts_hover_inv(css = \"opacity:0.2;\")\n       ))"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#tooltip-hover-combined",
+    "href": "hands-on_exercise3_a.html#tooltip-hover-combined",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Tooltip + Hover Combined",
+    "text": "Tooltip + Hover Combined\n\np &lt;- ggplot(data=exam_data, aes(x = MATHS)) +\n  geom_dotplot_interactive(aes(tooltip = CLASS, data_id = CLASS),\n                           stackgroups = TRUE,\n                           binwidth = 1,\n                           method = \"histodot\") +\n  scale_y_continuous(NULL, breaks = NULL)\n\ngirafe(ggobj = p,\n       width_svg = 6,\n       height_svg = 6 * 0.618,\n       options = list(\n         opts_hover(css = \"fill: #202020;\"),\n         opts_hover_inv(css = \"opacity:0.2;\")\n       ))"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#click-effect",
+    "href": "hands-on_exercise3_a.html#click-effect",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Click Effect",
+    "text": "Click Effect\n\nexam_data$onclick &lt;- sprintf(\"window.open(\\\"%s%s\\\")\", \n                             \"https://www.moe.gov.sg/schoolfinder?journey=Primary%20school\", \n                             as.character(exam_data$ID))\n\np &lt;- ggplot(data = exam_data, aes(x = MATHS, y = 0)) +\n  geom_point_interactive(aes(tooltip = ID), position = position_jitter(height = 0.1)) +\n  scale_y_continuous(NULL, breaks = NULL)\n\ngirafe(ggobj = p, width_svg = 6, height_svg = 6 * 0.618)"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#coordinated-multiple-views-ggiraph-patchwork",
+    "href": "hands-on_exercise3_a.html#coordinated-multiple-views-ggiraph-patchwork",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Coordinated Multiple Views (ggiraph + patchwork)",
+    "text": "Coordinated Multiple Views (ggiraph + patchwork)\n\np1 &lt;- ggplot(data=exam_data, aes(x = MATHS)) +\n  geom_dotplot_interactive(aes(data_id = ID),\n                           stackgroups = TRUE,\n                           binwidth = 1,\n                           method = \"histodot\") +\n  coord_cartesian(xlim = c(0,100)) +\n  scale_y_continuous(NULL, breaks = NULL)\n\np2 &lt;- ggplot(data=exam_data, aes(x = ENGLISH)) +\n  geom_dotplot_interactive(aes(data_id = ID),\n                           stackgroups = TRUE,\n                           binwidth = 1,\n                           method = \"histodot\") +\n  coord_cartesian(xlim = c(0,100)) +\n  scale_y_continuous(NULL, breaks = NULL)\n\ngirafe(code = print(p1 + p2),\n       width_svg = 6,\n       height_svg = 3,\n       options = list(\n         opts_hover(css = \"fill: #202020;\"),\n         opts_hover_inv(css = \"opacity:0.2;\")\n       ))"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#interactive-plots-with-plotly",
+    "href": "hands-on_exercise3_a.html#interactive-plots-with-plotly",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Interactive Plots with plotly",
+    "text": "Interactive Plots with plotly\n\nplot_ly(data = exam_data, \n        x = ~ENGLISH, \n        y = ~MATHS, \n        type = \"scatter\", \n        mode = \"markers\")\n\n\n\n\n\n\nplot_ly(data = exam_data, \n        x = ~ENGLISH, \n        y = ~MATHS, \n        color = ~RACE,\n        type = \"scatter\", \n        mode = \"markers\")\n\n\n\n\n\n\ngg &lt;- ggplot(data = exam_data, aes(x = ENGLISH, y = MATHS, color = RACE)) +\n  geom_point()\n\nggplotly(gg)\n\n\n\n\n\n\nshared_exam &lt;- highlight_key(exam_data)\n\np1 &lt;- ggplot(shared_exam, aes(x = ENGLISH, y = MATHS, color = RACE)) +\n  geom_point()\n\np2 &lt;- ggplot(shared_exam, aes(x = MATHS, y = SCIENCE, color = RACE)) +\n  geom_point()\n\nsubplot(ggplotly(p1), ggplotly(p2), nrows = 1) %&gt;%\n  highlight(\"plotly_selected\", dynamic = TRUE)\n\nAdding more colors to the selection color palette.\n\n\nSetting the `off` event (i.e., 'plotly_deselect') to match the `on` event (i.e., 'plotly_selected'). You can change this default via the `highlight()` function."
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#interactive-data-table-with-dt-crosstalk",
+    "href": "hands-on_exercise3_a.html#interactive-data-table-with-dt-crosstalk",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Interactive Data Table with DT + Crosstalk",
+    "text": "Interactive Data Table with DT + Crosstalk\n\ndatatable(shared_exam, class = \"compact\", extensions = \"Scroller\", options = list(scrollY = 200))"
+  },
+  {
+    "objectID": "hands-on_exercise3_a.html#linked-plot-table-brushing-via-crosstalk",
+    "href": "hands-on_exercise3_a.html#linked-plot-table-brushing-via-crosstalk",
+    "title": "Hands-On Exercise 3: Interactive Data Visualisation in R",
+    "section": "Linked Plot + Table (Brushing via Crosstalk)",
+    "text": "Linked Plot + Table (Brushing via Crosstalk)\n\nd &lt;- highlight_key(exam_data) \np &lt;- ggplot(d, \n            aes(ENGLISH, \n                MATHS)) + \n  geom_point(size=1) +\n  coord_cartesian(xlim=c(0,100),\n                  ylim=c(0,100))\n\ngg &lt;- highlight(ggplotly(p),        \n                \"plotly_selected\")  \n\ncrosstalk::bscols(gg,               \n                  DT::datatable(d), \n                  widths = 5)        \n\nSetting the `off` event (i.e., 'plotly_deselect') to match the `on` event (i.e., 'plotly_selected'). You can change this default via the `highlight()` function."
+  },
+  {
+    "objectID": "hands-on_exercise4d.html",
+    "href": "hands-on_exercise4d.html",
+    "title": "Funnel Plot for COVID-19 in DKI Jakarta",
+    "section": "",
+    "text": "covid19 &lt;- read_csv(\"hands-on_exercise4/COVID-19_DKI_Jakarta.csv\") %&gt;%\n  mutate_if(is.character, as.factor)\n\nRows: 267 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (3): City, District, Sub-district\ndbl (4): Sub-district ID, Positive, Recovered, Death\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "hands-on_exercise4d.html#importing-data",
+    "href": "hands-on_exercise4d.html#importing-data",
+    "title": "Funnel Plot for COVID-19 in DKI Jakarta",
+    "section": "",
+    "text": "covid19 &lt;- read_csv(\"hands-on_exercise4/COVID-19_DKI_Jakarta.csv\") %&gt;%\n  mutate_if(is.character, as.factor)\n\nRows: 267 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (3): City, District, Sub-district\ndbl (4): Sub-district ID, Positive, Recovered, Death\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "hands-on_exercise4d.html#funnelplotr-methods",
+    "href": "hands-on_exercise4d.html#funnelplotr-methods",
+    "title": "Funnel Plot for COVID-19 in DKI Jakarta",
+    "section": "2. FunnelPlotR Methods",
+    "text": "2. FunnelPlotR Methods\n\n2.1 Basic Funnel Plot\n\nfunnel_plot(\n  .data = covid19,\n  numerator = Positive,\n  denominator = Death,\n  group = `Sub-district`\n)\n\n\n\n\n\n\n\n\nA funnel plot object with 267 points of which 0 are outliers. \nPlot is adjusted for overdispersion. \n\n\n\n\n2.2 Makeover 1: Proportions\n\nfunnel_plot(\n  .data = covid19,\n  numerator = Death,\n  denominator = Positive,\n  group = `Sub-district`,\n  data_type = \"PR\",\n  xrange = c(0, 6500),\n  yrange = c(0, 0.05)\n)\n\nWarning: The `xrange` argument deprecated; please use the `x_range` argument\ninstead.  For more options, see the help: `?funnel_plot`\n\n\nWarning: The `yrange` argument deprecated; please use the `y_range` argument\ninstead.  For more options, see the help: `?funnel_plot`\n\n\n\n\n\n\n\n\n\nA funnel plot object with 267 points of which 7 are outliers. \nPlot is adjusted for overdispersion. \n\n\n\n\n2.3 Makeover 2: Customized Plot\n\nfunnel_plot(\n  .data = covid19,\n  numerator = Death,\n  denominator = Positive,\n  group = `Sub-district`,\n  data_type = \"PR\",\n  xrange = c(0, 6500),\n  yrange = c(0, 0.05),\n  label = NA,\n  title = \"Cumulative COVID-19 Fatality Rate by Cumulative Total Number of COVID-19 Positive Cases\",\n  x_label = \"Cumulative COVID-19 Positive Cases\",\n  y_label = \"Cumulative Fatality Rate\"\n)\n\nWarning: The `xrange` argument deprecated; please use the `x_range` argument\ninstead.  For more options, see the help: `?funnel_plot`\n\n\nWarning: The `yrange` argument deprecated; please use the `y_range` argument\ninstead.  For more options, see the help: `?funnel_plot`\n\n\n\n\n\n\n\n\n\nA funnel plot object with 267 points of which 7 are outliers. \nPlot is adjusted for overdispersion."
+  },
+  {
+    "objectID": "hands-on_exercise4d.html#ggplot2-funnel-plot",
+    "href": "hands-on_exercise4d.html#ggplot2-funnel-plot",
+    "title": "Funnel Plot for COVID-19 in DKI Jakarta",
+    "section": "3. ggplot2 Funnel Plot",
+    "text": "3. ggplot2 Funnel Plot\n\n3.1 Compute Rate & SE\n\ndf &lt;- covid19 %&gt;%\n  mutate(rate = Death / Positive) %&gt;%\n  mutate(rate.se = sqrt((rate * (1 - rate)) / Positive)) %&gt;%\n  filter(rate &gt; 0)\n\nfit.mean &lt;- weighted.mean(df$rate, 1 / df$rate.se^2)\n\n\n\n3.2 Compute Confidence Intervals\n\nnumber.seq &lt;- seq(1, max(df$Positive), 1)\nnumber.ll95 &lt;- fit.mean - 1.96 * sqrt((fit.mean * (1 - fit.mean)) / number.seq)\nnumber.ul95 &lt;- fit.mean + 1.96 * sqrt((fit.mean * (1 - fit.mean)) / number.seq)\nnumber.ll999 &lt;- fit.mean - 3.29 * sqrt((fit.mean * (1 - fit.mean)) / number.seq)\nnumber.ul999 &lt;- fit.mean + 3.29 * sqrt((fit.mean * (1 - fit.mean)) / number.seq)\n\ndfCI &lt;- data.frame(number.ll95, number.ul95, number.ll999, number.ul999, number.seq, fit.mean)\n\n\n\n3.3 Static Funnel Plot\n\np &lt;- ggplot(df, aes(x = Positive, y = rate)) +\n  geom_point(aes(label = `Sub-district`), alpha = 0.4) +\n  geom_line(data = dfCI, aes(x = number.seq, y = number.ll95), colour = \"grey40\", linetype = \"dashed\") +\n  geom_line(data = dfCI, aes(x = number.seq, y = number.ul95), colour = \"grey40\", linetype = \"dashed\") +\n  geom_line(data = dfCI, aes(x = number.seq, y = number.ll999), colour = \"grey40\") +\n  geom_line(data = dfCI, aes(x = number.seq, y = number.ul999), colour = \"grey40\") +\n  geom_hline(aes(yintercept = fit.mean), colour = \"grey40\") +\n  coord_cartesian(ylim = c(0, 0.05)) +\n  ggtitle(\"Cumulative Fatality Rate by Cumulative Number of COVID-19 Cases\") +\n  xlab(\"Cumulative Number of COVID-19 Cases\") +\n  ylab(\"Cumulative Fatality Rate\") +\n  theme_light()\n\nWarning in geom_point(aes(label = `Sub-district`), alpha = 0.4): Ignoring\nunknown aesthetics: label\n\np\n\n\n\n\n\n\n\n\n\n\n3.4 Interactive Funnel Plot\n\nggplotly(p, tooltip = c(\"label\", \"x\", \"y\"))"
+  },
+  {
+    "objectID": "hands-on_exercise4c.html",
+    "href": "hands-on_exercise4c.html",
+    "title": "Hands-on Exercise 4c: Visualising Uncertainty",
+    "section": "",
+    "text": "Plot statistics error bars using ggplot2\nPlot interactive error bars using ggplot2, plotly, and DT\nCreate advanced uncertainty visualizations using ggdist\nCreate hypothetical outcome plots (HOPs) using the ungeviz package"
+  },
+  {
+    "objectID": "hands-on_exercise4c.html#learning-outcome",
+    "href": "hands-on_exercise4c.html#learning-outcome",
+    "title": "Hands-on Exercise 4c: Visualising Uncertainty",
+    "section": "",
+    "text": "Plot statistics error bars using ggplot2\nPlot interactive error bars using ggplot2, plotly, and DT\nCreate advanced uncertainty visualizations using ggdist\nCreate hypothetical outcome plots (HOPs) using the ungeviz package"
+  },
+  {
+    "objectID": "hands-on_exercise4c.html#getting-started",
+    "href": "hands-on_exercise4c.html#getting-started",
+    "title": "Hands-on Exercise 4c: Visualising Uncertainty",
+    "section": "11.2 Getting Started",
+    "text": "11.2 Getting Started\n\n11.2.1 Installing and Loading Packages\n\npacman::p_load(plotly, crosstalk, DT, \n               ggdist, ggridges, colorspace,\n               gganimate, tidyverse)\n\n\n\n11.2.2 Importing the Data\n\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "hands-on_exercise4c.html#visualizing-the-uncertainty-of-point-estimates",
+    "href": "hands-on_exercise4c.html#visualizing-the-uncertainty-of-point-estimates",
+    "title": "Hands-on Exercise 4c: Visualising Uncertainty",
+    "section": "11.3 Visualizing the Uncertainty of Point Estimates",
+    "text": "11.3 Visualizing the Uncertainty of Point Estimates\n\nSummary Statistics\n\nmy_sum &lt;- exam %&gt;%\n  group_by(RACE) %&gt;%\n  summarise(\n    n = n(),\n    mean = mean(MATHS),\n    sd = sd(MATHS)\n  ) %&gt;%\n  mutate(se = sd / sqrt(n - 1))\n\n\n\nDisplay the Table\n\nknitr::kable(head(my_sum), format = 'html')\n\n\n\n\nRACE\nn\nmean\nsd\nse\n\n\n\n\nChinese\n193\n76.50777\n15.69040\n1.132357\n\n\nIndian\n12\n60.66667\n23.35237\n7.041005\n\n\nMalay\n108\n57.44444\n21.13478\n2.043177\n\n\nOthers\n9\n69.66667\n10.72381\n3.791438\n\n\n\n\n\n\n\n\n\n\n11.3.1 Standard Error Bars\n\nggplot(my_sum) +\n  geom_errorbar(\n    aes(x = RACE, ymin = mean - se, ymax = mean + se),\n    width = 0.2, colour = \"black\", alpha = 0.9, linewidth = 0.5\n  ) +\n  geom_point(\n    aes(x = RACE, y = mean),\n    stat = \"identity\", color = \"red\", size = 1.5, alpha = 1\n  ) +\n  ggtitle(\"Standard error of mean maths score by race\")\n\n\n\n\n\n\n\n\n\n\n\n11.3.2 95% Confidence Interval\n\nggplot(my_sum) +\n  geom_errorbar(\n    aes(x = reorder(RACE, -mean), ymin = mean - 1.96 * se, ymax = mean + 1.96 * se),\n    width = 0.2, colour = \"black\", alpha = 0.9, linewidth = 0.5\n  ) +\n  geom_point(\n    aes(x = RACE, y = mean),\n    stat = \"identity\", color = \"red\", size = 1.5, alpha = 1\n  ) +\n  labs(x = \"Maths score\", title = \"95% confidence interval of mean maths score by race\")\n\n\n\n\n\n\n\n\n\n\n\n11.3.3 99% Confidence Interval with Interactive Plot\n\nshared_df = SharedData$new(my_sum)\n\nbscols(widths = c(4, 8),\n  ggplotly(\n    ggplot(shared_df) +\n      geom_errorbar(aes(x = reorder(RACE, -mean), ymin = mean - 2.58 * se, ymax = mean + 2.58 * se),\n                    width = 0.2, colour = \"black\", alpha = 0.9, size = 0.5) +\n      geom_point(aes(x = RACE, y = mean,\n                     text = paste(\"Race:\", RACE, \"&lt;br&gt;N:\", n,\n                                  \"&lt;br&gt;Avg. Scores:\", round(mean, 2),\n                                  \"&lt;br&gt;99% CI:[\", round(mean - 2.58 * se, 2), \",\",\n                                  round(mean + 2.58 * se, 2), \"]\")),\n                 stat = \"identity\", color = \"red\", size = 1.5, alpha = 1) +\n      xlab(\"Race\") + ylab(\"Average Scores\") +\n      theme_minimal() +\n      theme(axis.text.x = element_text(angle = 45, vjust = 0.5, hjust = 1)) +\n      ggtitle(\"99% Confidence interval of average maths scores by race\"),\n    tooltip = \"text\"\n  ),\n  DT::datatable(shared_df, rownames = FALSE, class = \"compact\", width = \"100%\",\n                options = list(pageLength = 10, scrollX = TRUE),\n                colnames = c(\"No. of pupils\", \"Avg Scores\", \"Std Dev\", \"Std Error\")) %&gt;%\n    formatRound(columns = c(\"mean\", \"sd\", \"se\"), digits = 2)\n)\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\nWarning in geom_point(aes(x = RACE, y = mean, text = paste(\"Race:\", RACE, :\nIgnoring unknown aesthetics: text"
+  },
+  {
+    "objectID": "hands-on_exercise4c.html#visualising-uncertainty-with-ggdist",
+    "href": "hands-on_exercise4c.html#visualising-uncertainty-with-ggdist",
+    "title": "Hands-on Exercise 4c: Visualising Uncertainty",
+    "section": "11.4 Visualising Uncertainty with ggdist",
+    "text": "11.4 Visualising Uncertainty with ggdist\n\n11.4.1 Basic Point + Interval Plot\n\nexam %&gt;%\n  ggplot(aes(x = RACE, y = MATHS)) +\n  stat_pointinterval() +\n  labs(title = \"Visualising confidence intervals of mean math score\",\n       subtitle = \"Mean Point + Multiple-interval plot\")\n\n\n\n\n\n\n\n\n\n\n\n11.4.2 Median + 95% Confidence Intervals\n\nexam %&gt;%\n  ggplot(aes(x = RACE, y = MATHS)) +\n  stat_pointinterval(.width = 0.95, .point = median, .interval = qi) +\n  labs(title = \"Visualising confidence intervals of median math score\",\n       subtitle = \"Median Point + Multiple-interval plot\")\n\nWarning in layer_slabinterval(data = data, mapping = mapping, stat =\nStatPointinterval, : Ignoring unknown parameters: `.point` and `.interval`\n\n\n\n\n\n\n\n\n\n\n\n\n11.4.3 Showing Both 95% and 99% CI\n\nexam %&gt;%\n  ggplot(aes(x = RACE, y = MATHS)) +\n  stat_pointinterval(.width = c(0.95, 0.99), show.legend = FALSE) +\n  labs(title = \"Visualising 95% and 99% confidence intervals\",\n       subtitle = \"Mean Point + Multiple-interval plot\")\n\n\n\n\n\n\n\n\n\n\n\n11.4.4 Gradient + Interval Plot\n\nexam %&gt;%\n  ggplot(aes(x = RACE, y = MATHS)) +\n  stat_gradientinterval(fill = \"skyblue\", show.legend = TRUE) +\n  labs(title = \"Visualising confidence intervals of mean math score\",\n       subtitle = \"Gradient + interval plot\")"
+  },
+  {
+    "objectID": "hands-on_exercise4c.html#hypothetical-outcome-plots-hops",
+    "href": "hands-on_exercise4c.html#hypothetical-outcome-plots-hops",
+    "title": "Hands-on Exercise 4c: Visualising Uncertainty",
+    "section": "11.5 Hypothetical Outcome Plots (HOPs)",
+    "text": "11.5 Hypothetical Outcome Plots (HOPs)\n\n11.5.1 Install and Load ungeviz Package\n\ndevtools::install_github(\"wilkelab/ungeviz\")\n\nUsing GitHub PAT from the git credential store.\n\n\nSkipping install of 'ungeviz' from a github remote, the SHA1 (74e1651b) has not changed since last install.\n  Use `force = TRUE` to force installation\n\nlibrary(ungeviz)\n\n\n\n11.5.2 Generate HOP Plot\n\nggplot(data = exam, aes(x = factor(RACE), y = MATHS)) +\n  geom_point(position = position_jitter(height = 0.3, width = 0.05),\n             size = 0.4, color = \"#0072B2\", alpha = 1/2) +\n  geom_hpline(data = sampler(25, group = RACE),\n              height = 0.6, color = \"#D55E00\") +\n  theme_bw() +\n  transition_states(.draw, 1, 3)\n\nWarning in geom_hpline(data = sampler(25, group = RACE), height = 0.6, color =\n\"#D55E00\"): Ignoring unknown parameters: `height`"
+  },
+  {
+    "objectID": "take-home_exercise1.html",
+    "href": "take-home_exercise1.html",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "",
+    "text": "A local online media company is preparing a feature on Singapore’s demographic structure in 2024. This visualisation project aims to support that article by delivering compelling, accurate, and insightful graphics to inform public understanding. We utilise data from the Singapore Department of Statistics on residents by Planning Area/Subzone, Age, and Sex.\n\n\n\nThe dataset respopagesex2024.csv contains detailed resident counts disaggregated by Planning Area (PA), Subzone (SZ), Age, Sex, and Year (2024). It allows exploration of age structures, gender balances, and spatial distribution patterns critical to urban and social planning.\n\n\n\n\n\n\nVariable\nDescription\n\n\n\n\nPA\nPlanning Area\n\n\nSZ\nSubzone\n\n\nAge\nSingle Year of Age\n\n\nSex\nGender\n\n\nPop\nResident Population\n\n\nTime\nReference Time (June 2024)\n\n\n\n\n\n\nThis project utilizes three related files:\n\n\n\n\n\n\n\nFile Name\nDescription\n\n\n\n\nrespopagesex2024.csv\nMain dataset in CSV format. Used directly for all data wrangling and plots.\n\n\nrespopagesex2024e.xlsx\nExcel version of the same dataset. Useful for visual inspection and referencing.\n\n\nNotes_respopagesex2024.csv\nMetadata file that provides descriptions of the column headers.\n\n\n\nAlthough these files have different formats, they describe the same dataset — the resident population of Singapore by Planning Area, Subzone, single year of age, and sex as of June 2024. The CSV file is used for analysis, while the Excel and notes files support documentation and understanding of the structure and semantics of the dataset."
+  },
+  {
+    "objectID": "take-home_exercise1.html#background",
+    "href": "take-home_exercise1.html#background",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "",
+    "text": "A local online media company is preparing a feature on Singapore’s demographic structure in 2024. This visualisation project aims to support that article by delivering compelling, accurate, and insightful graphics to inform public understanding. We utilise data from the Singapore Department of Statistics on residents by Planning Area/Subzone, Age, and Sex."
+  },
+  {
+    "objectID": "take-home_exercise1.html#the-data",
+    "href": "take-home_exercise1.html#the-data",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "",
+    "text": "The dataset respopagesex2024.csv contains detailed resident counts disaggregated by Planning Area (PA), Subzone (SZ), Age, Sex, and Year (2024). It allows exploration of age structures, gender balances, and spatial distribution patterns critical to urban and social planning."
+  },
+  {
+    "objectID": "take-home_exercise1.html#data-dictionary",
+    "href": "take-home_exercise1.html#data-dictionary",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "",
+    "text": "Variable\nDescription\n\n\n\n\nPA\nPlanning Area\n\n\nSZ\nSubzone\n\n\nAge\nSingle Year of Age\n\n\nSex\nGender\n\n\nPop\nResident Population\n\n\nTime\nReference Time (June 2024)"
+  },
+  {
+    "objectID": "take-home_exercise1.html#description-of-supplied-files",
+    "href": "take-home_exercise1.html#description-of-supplied-files",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "",
+    "text": "This project utilizes three related files:\n\n\n\n\n\n\n\nFile Name\nDescription\n\n\n\n\nrespopagesex2024.csv\nMain dataset in CSV format. Used directly for all data wrangling and plots.\n\n\nrespopagesex2024e.xlsx\nExcel version of the same dataset. Useful for visual inspection and referencing.\n\n\nNotes_respopagesex2024.csv\nMetadata file that provides descriptions of the column headers.\n\n\n\nAlthough these files have different formats, they describe the same dataset — the resident population of Singapore by Planning Area, Subzone, single year of age, and sex as of June 2024. The CSV file is used for analysis, while the Excel and notes files support documentation and understanding of the structure and semantics of the dataset."
+  },
+  {
+    "objectID": "take-home_exercise1.html#population-pyramid",
+    "href": "take-home_exercise1.html#population-pyramid",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "4.1 Population Pyramid",
+    "text": "4.1 Population Pyramid\n\npyramid_df &lt;- df %&gt;%\n  group_by(Age, Sex) %&gt;%\n  summarise(Pop = sum(Pop), .groups = 'drop') %&gt;%\n  pivot_wider(names_from = Sex, values_from = Pop) %&gt;%\n  mutate(Males = -Males)\n\nggplot(pyramid_df, aes(x = Age)) +\n  geom_bar(aes(y = Males), stat = \"identity\", fill = \"blue\") +\n  geom_bar(aes(y = Females), stat = \"identity\", fill = \"pink\") +\n  labs(title = \"Population Pyramid of Singapore Residents by Age and Sex (2024)\",\n       x = \"Age\", y = \"Population\") +\n  theme_minimal() +\n  coord_flip()\n\nWarning: Removed 1 row containing missing values or values outside the scale range\n(`geom_bar()`).\nRemoved 1 row containing missing values or values outside the scale range\n(`geom_bar()`).\n\n\n\n\n\n\n\n\n\nInterpretation:\nAging trend is evident with a large senior population. Strong working-age base from 25–64. Balanced gender distribution across age groups."
+  },
+  {
+    "objectID": "take-home_exercise1.html#total-population-by-planning-area",
+    "href": "take-home_exercise1.html#total-population-by-planning-area",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "4.2 Total Population by Planning Area",
+    "text": "4.2 Total Population by Planning Area\n\npop_area &lt;- df %&gt;%\n  group_by(PA) %&gt;%\n  summarise(Pop = sum(Pop)) %&gt;%\n  arrange(desc(Pop))\n\nggplot(pop_area, aes(x = reorder(PA, Pop), y = Pop)) +\n  geom_col(fill = \"steelblue\") +\n  coord_flip() +\n  labs(title = \"Total Population by Planning Area (2024)\",\n       x = \"Planning Area\", y = \"Population\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\nInterpretation:\nPlanning areas like Bedok, Tampines, and Jurong West are the most populous. Central areas are less populated but may contain older demographics."
+  },
+  {
+    "objectID": "take-home_exercise1.html#senior-population-proportion-65-by-planning-area",
+    "href": "take-home_exercise1.html#senior-population-proportion-65-by-planning-area",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "4.3 Senior Population Proportion (65+) by Planning Area",
+    "text": "4.3 Senior Population Proportion (65+) by Planning Area\n\nsenior_df &lt;- df %&gt;%\n  group_by(PA, Age) %&gt;%\n  summarise(Pop = sum(Pop), .groups = 'drop') %&gt;%\n  mutate(AgeGroup = if_else(Age &gt;= 65, \"Senior\", \"Non-Senior\")) %&gt;%\n  group_by(PA, AgeGroup) %&gt;%\n  summarise(Pop = sum(Pop), .groups = 'drop') %&gt;%\n  pivot_wider(names_from = AgeGroup, values_from = Pop, values_fill = 0) %&gt;%\n  mutate(Senior_Pct = Senior / (Senior + `Non-Senior`) * 100)\n\nggplot(senior_df, aes(x = reorder(PA, Senior_Pct), y = Senior_Pct)) +\n  geom_col(fill = \"darkred\") +\n  coord_flip() +\n  labs(title = \"Proportion of Seniors (65+) by Planning Area (2024)\",\n       x = \"Planning Area\", y = \"Senior Population (%)\") +\n  theme_minimal()\n\nWarning: Removed 13 rows containing missing values or values outside the scale range\n(`geom_col()`).\n\n\n\n\n\n\n\n\n\nInterpretation:\nCentral areas like Bukit Merah and Outram have a high proportion of elderly residents, demanding targeted services for aging populations."
+  },
+  {
+    "objectID": "take-home_exercise1.html#singapore-population-distribution-by-age-group-2024",
+    "href": "take-home_exercise1.html#singapore-population-distribution-by-age-group-2024",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "4.4 Singapore Population Distribution by Age Group (2024)",
+    "text": "4.4 Singapore Population Distribution by Age Group (2024)\n\nage_group_dist &lt;- df %&gt;%\n  group_by(AgeGroup) %&gt;%\n  summarise(Pop = sum(Pop))\n\nggplot(age_group_dist, aes(x = AgeGroup, y = Pop)) +\n  geom_col(fill = \"skyblue\") +\n  labs(title = \"Singapore Population Distribution by Age Group (2024)\",\n       x = \"Age Group\", y = \"Population\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\nInterpretation:\nWorking-age groups (25–64) dominate, with growing numbers in the 65+ category. Young children and teens are a smaller share."
+  },
+  {
+    "objectID": "take-home_exercise1.html#top-10-most-populated-subzones-2024",
+    "href": "take-home_exercise1.html#top-10-most-populated-subzones-2024",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "4.5 Top 10 Most Populated Subzones (2024)",
+    "text": "4.5 Top 10 Most Populated Subzones (2024)\n\ntop_subzones &lt;- df %&gt;%\n  group_by(PA, SZ) %&gt;%\n  summarise(Pop = sum(Pop), .groups = \"drop\") %&gt;%\n  slice_max(Pop, n = 10)\n\nggplot(top_subzones, aes(x = Pop, y = fct_reorder(SZ, Pop), fill = PA)) +\n  geom_col() +\n  labs(title = \"Top 10 Most Populated Subzones (2024)\",\n       x = \"Population\", y = \"Subzone\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\nInterpretation:\nSubzones in Jurong West, Tampines, and Woodlands are the most densely populated, likely requiring greater investment in local infrastructure."
+  },
+  {
+    "objectID": "take-home_exercise1.html#population-heatmap-by-planning-area-and-age-group-2024",
+    "href": "take-home_exercise1.html#population-heatmap-by-planning-area-and-age-group-2024",
+    "title": "Take-home Exercise 1: Exploring Singapore Demographics (2024)",
+    "section": "4.6 Population Heatmap by Planning Area and Age Group (2024)",
+    "text": "4.6 Population Heatmap by Planning Area and Age Group (2024)\n\nheatmap_df &lt;- df %&gt;%\n  group_by(PA, AgeGroup) %&gt;%\n  summarise(Pop = sum(Pop), .groups = \"drop\") %&gt;%\n  pivot_wider(names_from = AgeGroup, values_from = Pop, values_fill = 0)\n\nheatmap_df %&gt;%\n  pivot_longer(-PA, names_to = \"AgeGroup\", values_to = \"Pop\") %&gt;%\n  ggplot(aes(x = AgeGroup, y = PA, fill = Pop)) +\n  geom_tile(color = \"white\") +\n  scale_fill_viridis_c() +\n  labs(title = \"Population Heatmap by Planning Area and Age Group (2024)\",\n       x = \"Age Group\", y = \"Planning Area\") +\n  theme_minimal()\n\n\n\n\n\n\n\n\nInterpretation:\nThis matrix highlights how different age groups are distributed. Young clusters in Sengkang and Punggol; older residents dominate central areas."
+  },
+  {
+    "objectID": "hands-on_exercise4a.html",
+    "href": "hands-on_exercise4a.html",
+    "title": "Hands-on Exercise 4: Visualising Distribution",
+    "section": "",
+    "text": "# Load necessary packages\npacman::p_load(ggdist, ggridges, ggthemes, colorspace, tidyverse)\n\n# Import dataset\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "hands-on_exercise4a.html#setup",
+    "href": "hands-on_exercise4a.html#setup",
+    "title": "Hands-on Exercise 4: Visualising Distribution",
+    "section": "",
+    "text": "# Load necessary packages\npacman::p_load(ggdist, ggridges, ggthemes, colorspace, tidyverse)\n\n# Import dataset\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "hands-on_exercise4a.html#ridgeline-plots",
+    "href": "hands-on_exercise4a.html#ridgeline-plots",
+    "title": "Hands-on Exercise 4: Visualising Distribution",
+    "section": "Ridgeline Plots",
+    "text": "Ridgeline Plots\n\nBasic Ridgeline Plot using geom_density_ridges()\n\nggplot(exam, aes(x = ENGLISH, y = CLASS)) +\n  geom_density_ridges() +\n  theme_minimal()\n\nPicking joint bandwidth of 3.18\n\n\n\n\n\n\n\n\n\n\n\nRidgeline Plot with Gradient Fill\n\nggplot(exam, aes(x = ENGLISH, y = CLASS, fill = stat(x))) +\n  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +\n  scale_fill_viridis_c(name = \"English Score\", option = \"C\") +\n  theme_minimal()\n\nWarning: `stat(x)` was deprecated in ggplot2 3.4.0.\nℹ Please use `after_stat(x)` instead.\n\n\nPicking joint bandwidth of 3.18\n\n\n\n\n\n\n\n\n\n\n\nRidgeline with ECDF Mapping\n\nggplot(exam, aes(x = ENGLISH, y = CLASS, fill = stat(ecdf))) +\n  stat_density_ridges(geom = \"density_ridges_gradient\", calc_ecdf = TRUE) +\n  scale_fill_viridis_c(name = \"ECDF\", option = \"C\") +\n  theme_minimal()\n\nPicking joint bandwidth of 3.18\n\n\n\n\n\n\n\n\n\n\n\nRidgeline with Quantile Coloring\n\nggplot(exam, aes(x = ENGLISH, y = CLASS, fill = stat(quantile))) +\n  stat_density_ridges(geom = \"density_ridges_gradient\",\n                      quantile_lines = TRUE,\n                      quantiles = 4) +\n  scale_fill_manual(values = c(\"#FFEDA0\", \"#FEB24C\", \"#F03B20\", \"#BD0026\")) +\n  theme_minimal()\n\nPicking joint bandwidth of 3.18\n\n\n\n\n\n\n\n\n\n\n\nRidgeline with Custom Quantiles (2.5% and 97.5%)\n\nggplot(exam, aes(x = ENGLISH, y = CLASS, fill = stat(quantile))) +\n  stat_density_ridges(geom = \"density_ridges_gradient\",\n                      quantile_lines = TRUE,\n                      quantiles = c(0.025, 0.975)) +\n  theme_minimal()\n\nPicking joint bandwidth of 3.18"
+  },
+  {
+    "objectID": "hands-on_exercise4a.html#raincloud-plots",
+    "href": "hands-on_exercise4a.html#raincloud-plots",
+    "title": "Hands-on Exercise 4: Visualising Distribution",
+    "section": "Raincloud Plots",
+    "text": "Raincloud Plots\n\nHalf-Eye Plot\n\nggplot(exam, aes(x = RACE, y = ENGLISH)) +\n  stat_halfeye(adjust = 0.5,\n               justification = -0.2,\n               .width = 0,\n               point_colour = NA)\n\n\n\n\n\n\n\n\n\n\nAdd Boxplot\n\nggplot(exam, aes(x = RACE, y = ENGLISH)) +\n  stat_halfeye(adjust = 0.5,\n               justification = -0.2,\n               .width = 0,\n               point_colour = NA) +\n  geom_boxplot(width = .20, outlier.shape = NA)\n\n\n\n\n\n\n\n\n\n\nAdd Dotplot\n\nggplot(exam, aes(x = RACE, y = ENGLISH)) +\n  stat_halfeye(adjust = 0.5,\n               justification = -0.2,\n               .width = 0,\n               point_colour = NA) +\n  geom_boxplot(width = .20, outlier.shape = NA) +\n  stat_dots(side = \"left\", dotsize = 1)\n\n\n\n\n\n\n\n\n\n\nFinal Raincloud Plot\n\nggplot(exam, aes(x = RACE, y = ENGLISH)) +\n  stat_halfeye(adjust = 0.5,\n               justification = -0.2,\n               .width = 0,\n               point_colour = NA) +\n  geom_boxplot(width = .20, outlier.shape = NA) +\n  stat_dots(side = \"left\", dotsize = 1) +\n  coord_flip() +\n  theme_economist()"
+  },
+  {
+    "objectID": "hands-on_exercise4b.html",
+    "href": "hands-on_exercise4b.html",
+    "title": "Hands-on Exercise 4: Visual Statistical Analysis",
+    "section": "",
+    "text": "# Read in the Exam.csv file\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n# View the structure of the dataset\nglimpse(exam)\n\nRows: 322\nColumns: 7\n$ ID      &lt;chr&gt; \"Student321\", \"Student305\", \"Student289\", \"Student227\", \"Stude…\n$ CLASS   &lt;chr&gt; \"3I\", \"3I\", \"3H\", \"3F\", \"3I\", \"3I\", \"3I\", \"3I\", \"3I\", \"3H\", \"3…\n$ GENDER  &lt;chr&gt; \"Male\", \"Female\", \"Male\", \"Male\", \"Male\", \"Female\", \"Male\", \"M…\n$ RACE    &lt;chr&gt; \"Malay\", \"Malay\", \"Chinese\", \"Chinese\", \"Malay\", \"Malay\", \"Chi…\n$ ENGLISH &lt;dbl&gt; 21, 24, 26, 27, 27, 31, 31, 31, 33, 34, 34, 36, 36, 36, 37, 38…\n$ MATHS   &lt;dbl&gt; 9, 22, 16, 77, 11, 16, 21, 18, 19, 49, 39, 35, 23, 36, 49, 30,…\n$ SCIENCE &lt;dbl&gt; 15, 16, 16, 31, 25, 16, 25, 27, 15, 37, 42, 22, 32, 36, 35, 45…"
+  },
+  {
+    "objectID": "hands-on_exercise4b.html#importing-data",
+    "href": "hands-on_exercise4b.html#importing-data",
+    "title": "Hands-on Exercise 4: Visual Statistical Analysis",
+    "section": "",
+    "text": "# Read in the Exam.csv file\nexam &lt;- read_csv(\"hands-on_exercise2/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.\n\n# View the structure of the dataset\nglimpse(exam)\n\nRows: 322\nColumns: 7\n$ ID      &lt;chr&gt; \"Student321\", \"Student305\", \"Student289\", \"Student227\", \"Stude…\n$ CLASS   &lt;chr&gt; \"3I\", \"3I\", \"3H\", \"3F\", \"3I\", \"3I\", \"3I\", \"3I\", \"3I\", \"3H\", \"3…\n$ GENDER  &lt;chr&gt; \"Male\", \"Female\", \"Male\", \"Male\", \"Male\", \"Female\", \"Male\", \"M…\n$ RACE    &lt;chr&gt; \"Malay\", \"Malay\", \"Chinese\", \"Chinese\", \"Malay\", \"Malay\", \"Chi…\n$ ENGLISH &lt;dbl&gt; 21, 24, 26, 27, 27, 31, 31, 31, 33, 34, 34, 36, 36, 36, 37, 38…\n$ MATHS   &lt;dbl&gt; 9, 22, 16, 77, 11, 16, 21, 18, 19, 49, 39, 35, 23, 36, 49, 30,…\n$ SCIENCE &lt;dbl&gt; 15, 16, 16, 31, 25, 16, 25, 27, 15, 37, 42, 22, 32, 36, 35, 45…"
+  },
+  {
+    "objectID": "hands-on_exercise4b.html#one-sample-test-on-english-scores",
+    "href": "hands-on_exercise4b.html#one-sample-test-on-english-scores",
+    "title": "Hands-on Exercise 4: Visual Statistical Analysis",
+    "section": "2. One-Sample Test on English Scores",
+    "text": "2. One-Sample Test on English Scores\n\n# Visualizing a Bayesian one-sample test for English scores\nset.seed(1234)\n\ngghistostats(\n  data = exam,\n  x = ENGLISH,\n  type = \"bayes\",\n  test.value = 60,\n  xlab = \"English scores\"\n)"
+  },
+  {
+    "objectID": "hands-on_exercise4b.html#interpreting-bayes-factor",
+    "href": "hands-on_exercise4b.html#interpreting-bayes-factor",
+    "title": "Hands-on Exercise 4: Visual Statistical Analysis",
+    "section": "3. Interpreting Bayes Factor",
+    "text": "3. Interpreting Bayes Factor\nThe Bayes Factor (BF10) quantifies the evidence for the alternative hypothesis (H1) compared to the null hypothesis (H0). Interpretation based on Jeffreys’ scale:\n\nBF &lt; 1: Evidence for H0\n1 &lt; BF &lt; 3: Anecdotal evidence for H1\n3 &lt; BF &lt; 10: Moderate evidence for H1\nBF &gt; 10: Strong evidence for H1"
+  },
+  {
+    "objectID": "hands-on_exercise4b.html#two-sample-mean-test-maths-scores-by-gender",
+    "href": "hands-on_exercise4b.html#two-sample-mean-test-maths-scores-by-gender",
+    "title": "Hands-on Exercise 4: Visual Statistical Analysis",
+    "section": "4. Two-Sample Mean Test: Maths Scores by Gender",
+    "text": "4. Two-Sample Mean Test: Maths Scores by Gender\n\n# Visualizing a non-parametric test for Maths scores by Gender\nggbetweenstats(\n  data = exam,\n  x = GENDER, \n  y = MATHS,\n  type = \"np\",\n  messages = FALSE\n)"
+  },
+  {
+    "objectID": "hands-on_exercise4b.html#one-way-anova-test-english-scores-by-race",
+    "href": "hands-on_exercise4b.html#one-way-anova-test-english-scores-by-race",
+    "title": "Hands-on Exercise 4: Visual Statistical Analysis",
+    "section": "5. One-Way ANOVA Test: English Scores by Race",
+    "text": "5. One-Way ANOVA Test: English Scores by Race\n\n# One-way ANOVA with post-hoc pairwise comparisons for English scores by Race\nggbetweenstats(\n  data = exam,\n  x = RACE, \n  y = ENGLISH,\n  type = \"p\",\n  mean.ci = TRUE, \n  pairwise.comparisons = TRUE, \n  pairwise.display = \"s\",\n  p.adjust.method = \"fdr\",\n  messages = FALSE\n)"
+  },
+  {
+    "objectID": "hands-on_exercise4b.html#correlation-test-maths-vs-english-scores",
+    "href": "hands-on_exercise4b.html#correlation-test-maths-vs-english-scores",
+    "title": "Hands-on Exercise 4: Visual Statistical Analysis",
+    "section": "6. Correlation Test: Maths vs English Scores",
+    "text": "6. Correlation Test: Maths vs English Scores\n\n# Visual test of correlation between Maths and English scores\nggscatterstats(\n  data = exam,\n  x = MATHS,\n  y = ENGLISH,\n  marginal = FALSE\n)"
+  },
+  {
+    "objectID": "hands-on_exercise4b.html#test-of-association-binned-maths-scores-vs-gender",
+    "href": "hands-on_exercise4b.html#test-of-association-binned-maths-scores-vs-gender",
+    "title": "Hands-on Exercise 4: Visual Statistical Analysis",
+    "section": "7. Test of Association: Binned Maths Scores vs Gender",
+    "text": "7. Test of Association: Binned Maths Scores vs Gender\n\n# Create bins for Maths scores\nexam1 &lt;- exam %&gt;% \n  mutate(MATHS_bins = cut(MATHS, breaks = c(0, 60, 75, 85, 100)))\n\n# Association test between binned Maths scores and Gender\nggbarstats(\n  data = exam1, \n  x = MATHS_bins, \n  y = GENDER\n)"
+  },
+  {
+    "objectID": "hands-on_exercise3_b.html",
+    "href": "hands-on_exercise3_b.html",
+    "title": "Animated Statistical Graphics with R",
+    "section": "",
+    "text": "# Load required packages\npacman::p_load(readxl, gifski, gapminder,\n               plotly, gganimate, tidyverse)"
+  },
+  {
+    "objectID": "hands-on_exercise3_b.html#setup",
+    "href": "hands-on_exercise3_b.html#setup",
+    "title": "Animated Statistical Graphics with R",
+    "section": "",
+    "text": "# Load required packages\npacman::p_load(readxl, gifski, gapminder,\n               plotly, gganimate, tidyverse)"
+  },
+  {
+    "objectID": "hands-on_exercise3_b.html#importing-the-data",
+    "href": "hands-on_exercise3_b.html#importing-the-data",
+    "title": "Animated Statistical Graphics with R",
+    "section": "Importing the Data",
+    "text": "Importing the Data\n\n# Define the columns to convert to factor\ncol &lt;- c(\"Country\", \"Continent\")\n\n# Read the Excel file and wrangle the data\nglobalPop &lt;- read_xls(\"hands-on_exercise3/GlobalPopulation.xls\",\n                      sheet = \"Data\") %&gt;%\n  mutate(across(all_of(col), as.factor)) %&gt;%\n  mutate(Year = as.integer(Year))"
+  },
+  {
+    "objectID": "hands-on_exercise3_b.html#static-bubble-plot-with-ggplot2",
+    "href": "hands-on_exercise3_b.html#static-bubble-plot-with-ggplot2",
+    "title": "Animated Statistical Graphics with R",
+    "section": "Static Bubble Plot with ggplot2",
+    "text": "Static Bubble Plot with ggplot2\n\n# Create a static bubble plot\nggplot(globalPop, aes(x = Old, y = Young, \n                      size = Population, \n                      colour = Country)) +\n  geom_point(alpha = 0.7, show.legend = FALSE) +\n  scale_colour_manual(values = country_colors) +\n  scale_size(range = c(2, 12)) +\n  labs(title = 'Year: {frame_time}', \n       x = '% Aged', \n       y = '% Young')"
+  },
+  {
+    "objectID": "hands-on_exercise3_b.html#animated-bubble-plot-with-gganimate",
+    "href": "hands-on_exercise3_b.html#animated-bubble-plot-with-gganimate",
+    "title": "Animated Statistical Graphics with R",
+    "section": "Animated Bubble Plot with gganimate",
+    "text": "Animated Bubble Plot with gganimate\n\n# Animated bubble plot with gganimate\nggplot(globalPop, aes(x = Old, y = Young, \n                      size = Population, \n                      colour = Country)) +\n  geom_point(alpha = 0.7, show.legend = FALSE) +\n  scale_colour_manual(values = country_colors) +\n  scale_size(range = c(2, 12)) +\n  labs(title = 'Year: {frame_time}', \n       x = '% Aged', \n       y = '% Young') +\n  transition_time(Year) +\n  ease_aes('linear')"
+  },
+  {
+    "objectID": "hands-on_exercise3_b.html#animated-bubble-plot-with-ggplotly",
+    "href": "hands-on_exercise3_b.html#animated-bubble-plot-with-ggplotly",
+    "title": "Animated Statistical Graphics with R",
+    "section": "Animated Bubble Plot with ggplotly()",
+    "text": "Animated Bubble Plot with ggplotly()\n\n# Create the ggplot object\np &lt;- ggplot(globalPop, aes(x = Old, y = Young,\n                           size = Population,\n                           colour = Country,\n                           frame = Year)) +\n  geom_point(alpha = 0.7) +\n  scale_colour_manual(values = country_colors) +\n  scale_size(range = c(2, 12)) +\n  labs(x = '% Aged', y = '% Young') +\n  theme(legend.position = 'none')\n\n# Convert to plotly animation\nggplotly(p)\n\nWarning in p$x$data[firstFrame] &lt;- p$x$frames[[1]]$data: number of items to\nreplace is not a multiple of replacement length"
+  },
+  {
+    "objectID": "hands-on_exercise3_b.html#animated-bubble-plot-with-plot_ly",
+    "href": "hands-on_exercise3_b.html#animated-bubble-plot-with-plot_ly",
+    "title": "Animated Statistical Graphics with R",
+    "section": "Animated Bubble Plot with plot_ly()",
+    "text": "Animated Bubble Plot with plot_ly()\n\n# Animated bubble plot using plot_ly\nplot_ly(globalPop, \n        x = ~Old, y = ~Young, \n        size = ~Population, \n        color = ~Country,\n        frame = ~Year, \n        text = ~Country, \n        hoverinfo = \"text\", \n        type = 'scatter', mode = 'markers',\n        marker = list(sizemode = 'diameter', \n                      sizeref = 2.0, \n                      opacity = 0.7)) %&gt;%\n  layout(title = 'Global Population Dynamics',\n         xaxis = list(title = \"% Aged\"),\n         yaxis = list(title = \"% Young\"),\n         showlegend = FALSE)\n\nWarning in RColorBrewer::brewer.pal(N, \"Set2\"): n too large, allowed maximum for palette Set2 is 8\nReturning the palette you asked for with that many colors\nWarning in RColorBrewer::brewer.pal(N, \"Set2\"): n too large, allowed maximum for palette Set2 is 8\nReturning the palette you asked for with that many colors\n\n\nWarning in p$x$data[firstFrame] &lt;- p$x$frames[[1]]$data: number of items to\nreplace is not a multiple of replacement length"
+  },
+  {
+    "objectID": "hands-on_exercise1.html",
+    "href": "hands-on_exercise1.html",
+    "title": "Hands-On Exercise 1: Grammar of Graphics with ggplot2",
+    "section": "",
+    "text": "# Load required packages\ninstall.packages(\"pacman\", repos = \"https://cloud.r-project.org/\")\n\n\nThe downloaded binary packages are in\n    /var/folders/fw/r5v73g5d55xfr_hq4n78p6rr0000gn/T//Rtmpp5PIJb/downloaded_packages\n\npacman::p_load(tidyverse)\n# Load the data\n#install.packages(\"readr\")\n\nlibrary(readr)\n\nexam_data &lt;- read_csv(\"hands-on_exercise1/data/Exam_data.csv\")\n\nRows: 322 Columns: 7\n── Column specification ────────────────────────────────────────────────────────\nDelimiter: \",\"\nchr (4): ID, CLASS, GENDER, RACE\ndbl (3): ENGLISH, MATHS, SCIENCE\n\nℹ Use `spec()` to retrieve the full column specification for this data.\nℹ Specify the column types or set `show_col_types = FALSE` to quiet this message."
+  },
+  {
+    "objectID": "hands-on_exercise1.html#r-graphics-vs-ggplot",
+    "href": "hands-on_exercise1.html#r-graphics-vs-ggplot",
+    "title": "Hands-On Exercise 1: Grammar of Graphics with ggplot2",
+    "section": "R Graphics VS ggplot",
+    "text": "R Graphics VS ggplot\n\n#install.packages(\"ggplot2\")  # run only if not installed\nlibrary(ggplot2)\n\nggplot(data=exam_data, aes(x = MATHS)) +\n  geom_histogram(bins=10, \n                 boundary = 100,\n                 color=\"black\", \n                 fill=\"grey\") +\n  ggtitle(\"Distribution of Maths scores\")\n\n\n\n\n\n\n\n\n\nhist(exam_data$MATHS)"
+  },
+  {
+    "objectID": "hands-on_exercise1.html#geometric-objects",
+    "href": "hands-on_exercise1.html#geometric-objects",
+    "title": "Hands-On Exercise 1: Grammar of Graphics with ggplot2",
+    "section": "Geometric Objects",
+    "text": "Geometric Objects\n\nBar Chart\n\nggplot(data = exam_data, aes(x = RACE)) + \n  geom_bar()\n\n\n\n\n\n\n\n\n\n\nDot Plot\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_dotplot(binwidth = 2.5, dotsize = 0.5) +\n  scale_y_continuous(NULL, breaks = NULL)\n\n\n\n\n\n\n\n\n\n\nHistogram\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_histogram()\n\n`stat_bin()` using `bins = 30`. Pick better value with `binwidth`.\n\n\n\n\n\n\n\n\n\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_histogram(bins = 20, fill = \"light blue\", color = \"black\")\n\n\n\n\n\n\n\n\n\n\nHistogram by Gender\n\nggplot(data = exam_data, aes(x = MATHS, fill = GENDER)) +\n  geom_histogram(bins = 20, color = \"grey30\")\n\n\n\n\n\n\n\n\n\n\nDensity Plot\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_density()\n\n\n\n\n\n\n\n\n\nggplot(data = exam_data, aes(x = MATHS, colour = GENDER)) +\n  geom_density()\n\n\n\n\n\n\n\n\n\n\nBoxplot\n\nggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +\n  geom_boxplot()\n\n\n\n\n\n\n\n\n\nggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +\n  geom_boxplot(notch = TRUE)\n\n\n\n\n\n\n\n\n\n\nViolin Plot\n\nggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +\n  geom_violin()\n\n\n\n\n\n\n\n\n\n\nScatterplot\n\nggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +\n  geom_point()\n\n\n\n\n\n\n\n\n\n\nBoxplot + Points\n\nggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +\n  geom_boxplot() +\n  geom_point(position = \"jitter\", size = 0.5)\n\n\n\n\n\n\n\n\n\n\nBoxplot with Mean (stat_summary)\n\nggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +\n  geom_boxplot() +\n  stat_summary(fun = \"mean\", geom = \"point\", colour = \"red\", size = 4)\n\n\n\n\n\n\n\n\n\n\nBoxplot with Mean (geom_point)\n\nggplot(data = exam_data, aes(x = GENDER, y = MATHS)) +\n  geom_boxplot() +\n  geom_point(stat = \"summary\", fun = \"mean\", colour = \"red\", size = 4)\n\n\n\n\n\n\n\n\n\n\nScatterplot with Smooth Line\n\nggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(size = 0.5)\n\nWarning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.\nℹ Please use `linewidth` instead.\n\n\n`geom_smooth()` using method = 'loess' and formula = 'y ~ x'\n\n\n\n\n\n\n\n\n\n\nggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(method = lm, linewidth = 0.5)\n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "hands-on_exercise1.html#facets",
+    "href": "hands-on_exercise1.html#facets",
+    "title": "Hands-On Exercise 1: Grammar of Graphics with ggplot2",
+    "section": "Facets",
+    "text": "Facets\n\nfacet_wrap()\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_histogram(bins = 20) +\n  facet_wrap(~CLASS)\n\n\n\n\n\n\n\n\n\n\nfacet_grid()\n\nggplot(data = exam_data, aes(x = MATHS)) +\n  geom_histogram(bins = 20) +\n  facet_grid(~CLASS)"
+  },
+  {
+    "objectID": "hands-on_exercise1.html#coordinate-systems",
+    "href": "hands-on_exercise1.html#coordinate-systems",
+    "title": "Hands-On Exercise 1: Grammar of Graphics with ggplot2",
+    "section": "Coordinate Systems",
+    "text": "Coordinate Systems\n\nHorizontal Bar Chart\n\nggplot(data = exam_data, aes(x = RACE)) +\n  geom_bar() +\n  coord_flip()\n\n\n\n\n\n\n\n\n\n\nFix Axis Limits\n\nggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +\n  geom_point() +\n  geom_smooth(method = lm, size = 0.5) +\n  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100))\n\n`geom_smooth()` using formula = 'y ~ x'"
+  },
+  {
+    "objectID": "hands-on_exercise1.html#themes",
+    "href": "hands-on_exercise1.html#themes",
+    "title": "Hands-On Exercise 1: Grammar of Graphics with ggplot2",
+    "section": "Themes",
+    "text": "Themes\n\ntheme_gray (default)\n\nggplot(data = exam_data, aes(x = RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_gray()\n\n\n\n\n\n\n\n\n\n\ntheme_classic\n\nggplot(data = exam_data, aes(x = RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_classic()\n\n\n\n\n\n\n\n\n\n\ntheme_minimal\n\nggplot(data = exam_data, aes(x = RACE)) +\n  geom_bar() +\n  coord_flip() +\n  theme_minimal()"
+  }
+]

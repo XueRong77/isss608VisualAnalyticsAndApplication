@@ -1,0 +1,103 @@
+---
+title: "Hands-on Exercise 4: Visual Statistical Analysis"
+format: html
+editor: visual
+---
+
+```{r setup, include=FALSE}
+# Load necessary packages
+pacman::p_load(ggstatsplot, tidyverse)
+```
+
+## 1. Importing Data
+
+```{r}
+# Read in the Exam.csv file
+exam <- read_csv("/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv")
+
+# View the structure of the dataset
+glimpse(exam)
+```
+
+## 2. One-Sample Test on English Scores
+
+```{r}
+# Visualizing a Bayesian one-sample test for English scores
+set.seed(1234)
+
+gghistostats(
+  data = exam,
+  x = ENGLISH,
+  type = "bayes",
+  test.value = 60,
+  xlab = "English scores"
+)
+```
+
+## 3. Interpreting Bayes Factor
+
+The Bayes Factor (BF10) quantifies the evidence for the alternative hypothesis (H1) compared to the null hypothesis (H0). Interpretation based on Jeffreys’ scale:
+
+-   **BF \< 1**: Evidence for H0
+-   **1 \< BF \< 3**: Anecdotal evidence for H1
+-   **3 \< BF \< 10**: Moderate evidence for H1
+-   **BF \> 10**: Strong evidence for H1
+
+## 4. Two-Sample Mean Test: Maths Scores by Gender
+
+```{r}
+# Visualizing a non-parametric test for Maths scores by Gender
+ggbetweenstats(
+  data = exam,
+  x = GENDER, 
+  y = MATHS,
+  type = "np",
+  messages = FALSE
+)
+```
+
+## 5. One-Way ANOVA Test: English Scores by Race
+
+```{r}
+# One-way ANOVA with post-hoc pairwise comparisons for English scores by Race
+ggbetweenstats(
+  data = exam,
+  x = RACE, 
+  y = ENGLISH,
+  type = "p",
+  mean.ci = TRUE, 
+  pairwise.comparisons = TRUE, 
+  pairwise.display = "s",
+  p.adjust.method = "fdr",
+  messages = FALSE
+)
+```
+
+## 6. Correlation Test: Maths vs English Scores
+
+```{r}
+# Visual test of correlation between Maths and English scores
+ggscatterstats(
+  data = exam,
+  x = MATHS,
+  y = ENGLISH,
+  marginal = FALSE
+)
+```
+
+## 7. Test of Association: Binned Maths Scores vs Gender
+
+```{r}
+# Create bins for Maths scores
+exam1 <- exam %>% 
+  mutate(MATHS_bins = cut(MATHS, breaks = c(0, 60, 75, 85, 100)))
+
+# Association test between binned Maths scores and Gender
+ggbarstats(
+  data = exam1, 
+  x = MATHS_bins, 
+  y = GENDER
+)
+```
+
+---

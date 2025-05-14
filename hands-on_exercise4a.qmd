@@ -1,0 +1,113 @@
+---
+title: "Hands-on Exercise 4: Visualising Distribution"
+format: html
+editor: visual
+---
+
+## Setup
+
+```{r}
+# Load necessary packages
+pacman::p_load(ggdist, ggridges, ggthemes, colorspace, tidyverse)
+
+# Import dataset
+exam <- read_csv("/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv")
+```
+
+## Ridgeline Plots
+
+### Basic Ridgeline Plot using `geom_density_ridges()`
+
+```{r}
+ggplot(exam, aes(x = ENGLISH, y = CLASS)) +
+  geom_density_ridges() +
+  theme_minimal()
+```
+
+### Ridgeline Plot with Gradient Fill
+
+```{r}
+ggplot(exam, aes(x = ENGLISH, y = CLASS, fill = stat(x))) +
+  geom_density_ridges_gradient(scale = 3, rel_min_height = 0.01) +
+  scale_fill_viridis_c(name = "English Score", option = "C") +
+  theme_minimal()
+```
+
+### Ridgeline with ECDF Mapping
+
+```{r}
+ggplot(exam, aes(x = ENGLISH, y = CLASS, fill = stat(ecdf))) +
+  stat_density_ridges(geom = "density_ridges_gradient", calc_ecdf = TRUE) +
+  scale_fill_viridis_c(name = "ECDF", option = "C") +
+  theme_minimal()
+```
+
+### Ridgeline with Quantile Coloring
+
+```{r}
+ggplot(exam, aes(x = ENGLISH, y = CLASS, fill = stat(quantile))) +
+  stat_density_ridges(geom = "density_ridges_gradient",
+                      quantile_lines = TRUE,
+                      quantiles = 4) +
+  scale_fill_manual(values = c("#FFEDA0", "#FEB24C", "#F03B20", "#BD0026")) +
+  theme_minimal()
+```
+
+### Ridgeline with Custom Quantiles (2.5% and 97.5%)
+
+```{r}
+ggplot(exam, aes(x = ENGLISH, y = CLASS, fill = stat(quantile))) +
+  stat_density_ridges(geom = "density_ridges_gradient",
+                      quantile_lines = TRUE,
+                      quantiles = c(0.025, 0.975)) +
+  theme_minimal()
+```
+
+## Raincloud Plots
+
+### Half-Eye Plot
+
+```{r}
+ggplot(exam, aes(x = RACE, y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA)
+```
+
+### Add Boxplot
+
+```{r}
+ggplot(exam, aes(x = RACE, y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA) +
+  geom_boxplot(width = .20, outlier.shape = NA)
+```
+
+### Add Dotplot
+
+```{r}
+ggplot(exam, aes(x = RACE, y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA) +
+  geom_boxplot(width = .20, outlier.shape = NA) +
+  stat_dots(side = "left", dotsize = 1)
+```
+
+### Final Raincloud Plot
+
+```{r}
+ggplot(exam, aes(x = RACE, y = ENGLISH)) +
+  stat_halfeye(adjust = 0.5,
+               justification = -0.2,
+               .width = 0,
+               point_colour = NA) +
+  geom_boxplot(width = .20, outlier.shape = NA) +
+  stat_dots(side = "left", dotsize = 1) +
+  coord_flip() +
+  theme_economist()
+```

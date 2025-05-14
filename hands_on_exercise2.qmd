@@ -1,0 +1,126 @@
+---
+title: "Hands-on Exercise 2: Beyond ggplot2 Fundamentals"
+format: html
+editor: visual
+---
+
+## Setup
+
+```{r}
+# Install and load necessary packages
+pacman::p_load(
+  tidyverse, ggrepel, ggthemes, hrbrthemes, patchwork
+)
+```
+
+## Import Data
+
+```{r}
+# Read the exam data CSV
+exam_data <- read_csv("/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise2/Exam_data.csv")
+```
+
+## ggrepel: Prevent Overlapping Labels
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +
+  geom_point() +
+  geom_smooth(method = lm, size = 0.5) +
+  geom_label_repel(aes(label = ID), fontface = "bold") +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+
+## ggthemes: Using Predefined Themes
+
+### Base ggplot2 Theme
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram(bins = 20, boundary = 100, color = "grey25", fill = "grey90") +
+  theme_gray() +
+  ggtitle("Distribution of Maths scores")
+```
+
+### Economist Theme
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram(bins = 20, boundary = 100, color = "grey25", fill = "grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_economist()
+```
+
+## hrbrthemes: Typography-Centric Themes
+
+### Default hrbrthemes
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram(bins = 20, boundary = 100, color = "grey25", fill = "grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum()
+```
+
+### Customized Typography and Grid
+
+```{r}
+ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram(bins = 20, boundary = 100, color = "grey25", fill = "grey90") +
+  ggtitle("Distribution of Maths scores") +
+  theme_ipsum(axis_title_size = 18, base_size = 15, grid = "Y")
+```
+
+## Composite Figures with Patchwork
+
+### Create Individual Plots
+
+```{r}
+p1 <- ggplot(data = exam_data, aes(x = MATHS)) +
+  geom_histogram(bins = 20, boundary = 100, color = "grey25", fill = "grey90") +
+  coord_cartesian(xlim = c(0, 100)) +
+  ggtitle("Distribution of Maths scores")
+
+p2 <- ggplot(data = exam_data, aes(x = ENGLISH)) +
+  geom_histogram(bins = 20, boundary = 100, color = "grey25", fill = "grey90") +
+  coord_cartesian(xlim = c(0, 100)) +
+  ggtitle("Distribution of English scores")
+
+p3 <- ggplot(data = exam_data, aes(x = MATHS, y = ENGLISH)) +
+  geom_point() +
+  geom_smooth(method = lm, size = 0.5) +
+  coord_cartesian(xlim = c(0, 100), ylim = c(0, 100)) +
+  ggtitle("English scores versus Maths scores for Primary 3")
+```
+
+### Combine Two Plots Horizontally
+
+```{r}
+p1 + p2
+```
+
+### Combine Three Plots in Layout
+
+```{r}
+(p1 / p2) | p3
+```
+
+### Add Auto-Tagging to Composite Plot
+
+```{r}
+((p1 / p2) | p3) + 
+  plot_annotation(tag_levels = 'I')
+```
+
+### Add Inset Plot
+
+```{r}
+p3 + inset_element(p2, left = 0.02, bottom = 0.7, right = 0.5, top = 1)
+```
+
+### Combine Patchwork with ggthemes
+
+```{r}
+patchwork <- (p1 / p2) | p3
+patchwork & theme_economist()
+```

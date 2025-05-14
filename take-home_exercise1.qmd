@@ -1,0 +1,236 @@
+---
+title: "Take-home Exercise 1: Exploring Singapore Demographics (2024)"
+author: "Zhang Xuerong"
+format: html
+editor: visual
+---
+
+# 1. Overview
+
+## 1.1 Background
+
+A local online media company is preparing a feature on Singapore's demographic structure in 2024. This visualisation project aims to support that article by delivering compelling, accurate, and insightful graphics to inform public understanding. We utilise data from the Singapore Department of Statistics on residents by Planning Area/Subzone, Age, and Sex.
+
+## 1.2 The Data
+
+The dataset `respopagesex2024.csv` contains detailed resident counts disaggregated by Planning Area (PA), Subzone (SZ), Age, Sex, and Year (2024). It allows exploration of age structures, gender balances, and spatial distribution patterns critical to urban and social planning.
+
+## 1.3 Data Dictionary
+
+| Variable | Description                |
+|----------|----------------------------|
+| PA       | Planning Area              |
+| SZ       | Subzone                    |
+| Age      | Single Year of Age         |
+| Sex      | Gender                     |
+| Pop      | Resident Population        |
+| Time     | Reference Time (June 2024) |
+
+## 1.4 Description of Supplied Files
+
+This project utilizes three related files:
+
+| File Name                    | Description                                                                      |
+|--------------------|----------------------------------------------------|
+| `respopagesex2024.csv`       | Main dataset in CSV format. Used directly for all data wrangling and plots.      |
+| `respopagesex2024e.xlsx`     | Excel version of the same dataset. Useful for visual inspection and referencing. |
+| `Notes_respopagesex2024.csv` | Metadata file that provides descriptions of the column headers.                  |
+
+Although these files have different formats, they describe the same dataset — the resident population of Singapore by Planning Area, Subzone, single year of age, and sex as of June 2024. The CSV file is used for analysis, while the Excel and notes files support documentation and understanding of the structure and semantics of the dataset.
+
+# 2. Loading Packages
+
+```{r}
+pacman::p_load(tidyverse, ggthemes, patchwork, knitr)
+```
+
+# 3. Data Preparation
+
+```{r}
+df <- read_csv("/Users/sharon/OneDrive - Singapore Management University/isss608data/take-home_exercise1/respopagesex2024.csv")
+df <- df %>%
+  mutate(Age = as.numeric(Age),
+         AgeGroup = cut(Age, breaks = c(0, 14, 24, 44, 64, 100), 
+                        labels = c("0-14", "15-24", "25-44", "45-64", "65+")))
+```
+
+# 4. Visualisations
+
+## 4.1 Population Pyramid
+
+```{r}
+pyramid_df <- df %>%
+  group_by(Age, Sex) %>%
+  summarise(Pop = sum(Pop), .groups = 'drop') %>%
+  pivot_wider(names_from = Sex, values_from = Pop) %>%
+  mutate(Males = -Males)
+
+ggplot(pyramid_df, aes(x = Age)) +
+  geom_bar(aes(y = Males), stat = "identity", fill = "blue") +
+  geom_bar(aes(y = Females), stat = "identity", fill = "pink") +
+  labs(title = "Population Pyramid of Singapore Residents by Age and Sex (2024)",
+       x = "Age", y = "Population") +
+  theme_minimal() +
+  coord_flip()
+```
+
+**Interpretation:**\
+Aging trend is evident with a large senior population. Strong working-age base from 25–64. Balanced gender distribution across age groups.
+
+------------------------------------------------------------------------
+
+## 4.2 Total Population by Planning Area
+
+```{r}
+pop_area <- df %>%
+  group_by(PA) %>%
+  summarise(Pop = sum(Pop)) %>%
+  arrange(desc(Pop))
+
+ggplot(pop_area, aes(x = reorder(PA, Pop), y = Pop)) +
+  geom_col(fill = "steelblue") +
+  coord_flip() +
+  labs(title = "Total Population by Planning Area (2024)",
+       x = "Planning Area", y = "Population") +
+  theme_minimal()
+```
+
+**Interpretation:**\
+Planning areas like Bedok, Tampines, and Jurong West are the most populous. Central areas are less populated but may contain older demographics.
+
+------------------------------------------------------------------------
+
+## 4.3 Senior Population Proportion (65+) by Planning Area
+
+```{r}
+senior_df <- df %>%
+  group_by(PA, Age) %>%
+  summarise(Pop = sum(Pop), .groups = 'drop') %>%
+  mutate(AgeGroup = if_else(Age >= 65, "Senior", "Non-Senior")) %>%
+  group_by(PA, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = 'drop') %>%
+  pivot_wider(names_from = AgeGroup, values_from = Pop, values_fill = 0) %>%
+  mutate(Senior_Pct = Senior / (Senior + `Non-Senior`) * 100)
+
+ggplot(senior_df, aes(x = reorder(PA, Senior_Pct), y = Senior_Pct)) +
+  geom_col(fill = "darkred") +
+  coord_flip() +
+  labs(title = "Proportion of Seniors (65+) by Planning Area (2024)",
+       x = "Planning Area", y = "Senior Population (%)") +
+  theme_minimal()
+```
+
+**Interpretation:**\
+Central areas like Bukit Merah and Outram have a high proportion of elderly residents, demanding targeted services for aging populations.
+
+------------------------------------------------------------------------
+
+## 4.4 Singapore Population Distribution by Age Group (2024)
+
+```{r}
+age_group_dist <- df %>%
+  group_by(AgeGroup) %>%
+  summarise(Pop = sum(Pop))
+
+ggplot(age_group_dist, aes(x = AgeGroup, y = Pop)) +
+  geom_col(fill = "skyblue") +
+  labs(title = "Singapore Population Distribution by Age Group (2024)",
+       x = "Age Group", y = "Population") +
+  theme_minimal()
+```
+
+**Interpretation:**\
+Working-age groups (25–64) dominate, with growing numbers in the 65+ category. Young children and teens are a smaller share.
+
+------------------------------------------------------------------------
+
+## 4.5 Top 10 Most Populated Subzones (2024)
+
+```{r}
+top_subzones <- df %>%
+  group_by(PA, SZ) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  slice_max(Pop, n = 10)
+
+ggplot(top_subzones, aes(x = Pop, y = fct_reorder(SZ, Pop), fill = PA)) +
+  geom_col() +
+  labs(title = "Top 10 Most Populated Subzones (2024)",
+       x = "Population", y = "Subzone") +
+  theme_minimal()
+```
+
+**Interpretation:**\
+Subzones in Jurong West, Tampines, and Woodlands are the most densely populated, likely requiring greater investment in local infrastructure.
+
+------------------------------------------------------------------------
+
+## 4.6 Population Heatmap by Planning Area and Age Group (2024)
+
+```{r}
+heatmap_df <- df %>%
+  group_by(PA, AgeGroup) %>%
+  summarise(Pop = sum(Pop), .groups = "drop") %>%
+  pivot_wider(names_from = AgeGroup, values_from = Pop, values_fill = 0)
+
+heatmap_df %>%
+  pivot_longer(-PA, names_to = "AgeGroup", values_to = "Pop") %>%
+  ggplot(aes(x = AgeGroup, y = PA, fill = Pop)) +
+  geom_tile(color = "white") +
+  scale_fill_viridis_c() +
+  labs(title = "Population Heatmap by Planning Area and Age Group (2024)",
+       x = "Age Group", y = "Planning Area") +
+  theme_minimal()
+```
+
+**Interpretation:**\
+This matrix highlights how different age groups are distributed. Young clusters in Sengkang and Punggol; older residents dominate central areas.
+
+------------------------------------------------------------------------
+
+# 5. Statistical Summary
+
+```{r}
+summary_df <- df %>%
+  group_by(PA) %>%
+  summarise(
+    Median_Age = median(Age, na.rm = TRUE),
+    Elderly_Pct = sum(Pop[Age >= 65], na.rm = TRUE) / sum(Pop, na.rm = TRUE) * 100
+  ) %>%
+  left_join(
+    df %>%
+      group_by(PA, SZ) %>%
+      summarise(Pop = sum(Pop), .groups = "drop") %>%
+      group_by(PA) %>%
+      summarise(CV = sd(Pop) / mean(Pop), .groups = "drop"),
+    by = "PA"
+  )
+
+knitr::kable(summary_df, digits = 2, caption = "Demographic Statistics by Planning Area")
+```
+
+**Interpretation:**\
+This table shows: - **Median Age**: Areas like Bedok and Ang Mo Kio have older populations. - **Elderly %**: Downtown and Bukit Merah have over 20% elderly. - **CV (Spread)**: Population in some PAs is unevenly distributed across subzones, indicating potential resource imbalances.
+
+### Key Observations:
+
+-   **Eastern and Northern population hotspots:**\
+    Planning areas like **Tampines**, **Bedok**, and **Sengkang** show the highest residential concentrations.
+
+-   **Lower density in central/southern regions:**\
+    **Marina South**, **Central Water Catchment**, and **Downtown Core** show low population due to commercial zoning or conservation land use.
+
+-   **Suburban growth in the West and North-West:**\
+    Areas like **Jurong West** and **Woodlands** reflect continued public housing expansion and decentralised urban planning.
+
+-   **Strategic implications:**\
+    Infrastructure, healthcare, and education planning should prioritise high-density residential zones. Meanwhile, low-population regions align with Singapore’s mixed-use and green space strategies.
+
+-   **Uneven population distribution:**\
+    The map highlights strong clustering of residential population, aligned with intentional zoning and national development policy.
+
+
+# 6. References
+
+-   Department of Statistics Singapore, 2024 dataset
+-   Kam, T.S. (2023). *R for Visual Analytics*
+-   Wong, K. (2020). *Visual Analytics Course Notes*
