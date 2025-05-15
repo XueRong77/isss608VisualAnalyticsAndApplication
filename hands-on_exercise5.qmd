@@ -1,0 +1,137 @@
+---
+title: "hands-on_Exercise 5: Modelling, Visualising and Analysing Network Data"
+format: html
+editor: visual
+---
+
+```{r}
+#| message: false
+# Install required packages (run only once)
+# install.packages(c("tidyverse", "lubridate", "igraph", "tidygraph", "ggraph", "visNetwork", "ggforce", "concaveman"))
+
+# Load libraries
+library(tidyverse)
+library(lubridate)
+library(igraph)
+library(tidygraph)
+library(ggraph)
+library(visNetwork)
+library(ggforce)
+library(concaveman)
+```
+
+## Step 1: Load the Data
+
+```{r}
+# Read nodes and edges data
+edges <- read_csv("/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise5/GAStech_email_edge.csv")
+nodes <- read_csv("/Users/sharon/OneDrive - Singapore Management University/isss608data/hands-on_exercise5/GAStech_email_node.csv")
+
+# Preview the data
+glimpse(edges)
+glimpse(nodes)
+```
+
+## Step 2: Wrangle Dates
+
+```{r}
+# Convert SentDate and extract weekday
+edges <- edges %>%
+  mutate(SendDate = dmy(SentDate),
+         Weekday = wday(SendDate, label = TRUE, abbr = FALSE))
+```
+
+## Step 3: Aggregate Edges
+
+```{r}
+edges_aggregated <- edges %>%
+  group_by(source, target, Weekday) %>%
+  summarise(Weight = n(), .groups = "drop")
+```
+
+## Step 4: Clean and Validate Data
+
+```{r}
+# Remove rows with NA
+edges_aggregated <- edges_aggregated %>%
+  filter(!is.na(source), !is.na(target), !is.na(Weekday), !is.na(Weight))
+
+nodes <- nodes %>%
+  filter(!is.na(id))
+
+# Ensure edge IDs match nodes
+valid_ids <- nodes$id
+edges_aggregated <- edges_aggregated %>%
+  filter(source %in% valid_ids, target %in% valid_ids)
+```
+
+## Step 5: Create Network Graph Object
+
+```{r}
+GAStech_graph <- tbl_graph(nodes = nodes, edges = edges_aggregated, directed = TRUE)
+
+# Display basic info
+GAStech_graph
+```
+
+## Step 6: Static Network Plot (Fruchterman-Reingold Layout)
+
+```{r}
+ggraph(GAStech_graph, layout = "fr") +
+  geom_edge_link(aes(width = Weight), alpha = 0.6) +
+  geom_node_point(aes(color = Department), size = 4) +
+  theme_graph()
+```
+
+## Step 7: Compute Betweenness Centrality
+
+```{r}
+GAStech_graph <- GAStech_graph %>%
+  mutate(betweenness = centrality_betweenness())
+```
+
+## Step 8: Visualise Centrality
+
+```{r}
+ggraph(GAStech_graph, layout = "fr") +
+  geom_edge_link(alpha = 0.2) +
+  geom_node_point(aes(size = betweenness, color = Department)) +
+  theme_graph()
+```
+
+## Step 9: Community Detection and Visualisation with Hulls
+
+```{r}
+GAStech_graph <- GAStech_graph %>%
+  mutate(community = group_edge_betweenness())
+
+layout <- create_layout(GAStech_graph, layout = "fr")
+
+ggraph(layout) +
+  geom_edge_link(alpha = 0.2) +
+  geom_node_point(aes(color = as.factor(community))) +
+  geom_mark_hull(
+    aes(x = x, y = y, group = community, fill = as.factor(community), label = community),
+    concavity = 5, alpha = 0.2
+  ) +
+  theme_graph()
+```
+
+## Step 10: Prepare for Interactive Graph
+
+```{r}
+nodes_vis <- nodes %>%
+  rename(id = id, label = label, group = Department)
+
+edges_vis <- edges_aggregated %>%
+  rename(from = source, to = target)
+```
+
+## Step 11: Interactive Network Graph with visNetwork
+
+```{r}
+visNetwork(nodes_vis, edges_vis) %>%
+  visIgraphLayout(layout = "layout_with_fr") %>%
+  visEdges(arrows = "to", smooth = TRUE) %>%
+  visOptions(highlightNearest = TRUE, nodesIdSelection = TRUE)
+```

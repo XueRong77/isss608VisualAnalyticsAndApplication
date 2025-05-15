@@ -1,7 +1,7 @@
 ---
 title: "Take-home Exercise 1: Exploring Singapore Demographics (2024)"
 author: "Zhang Xuerong"
-format: html
+format: docx
 editor: visual
 ---
 
@@ -31,7 +31,7 @@ The dataset `respopagesex2024.csv` contains detailed resident counts disaggregat
 This project utilizes three related files:
 
 | File Name                    | Description                                                                      |
-|--------------------|----------------------------------------------------|
+|------------------------------|----------------------------------------------------------------------------------|
 | `respopagesex2024.csv`       | Main dataset in CSV format. Used directly for all data wrangling and plots.      |
 | `respopagesex2024e.xlsx`     | Excel version of the same dataset. Useful for visual inspection and referencing. |
 | `Notes_respopagesex2024.csv` | Metadata file that provides descriptions of the column headers.                  |
@@ -227,7 +227,6 @@ This table shows: - **Median Age**: Areas like Bedok and Ang Mo Kio have older p
 
 -   **Uneven population distribution:**\
     The map highlights strong clustering of residential population, aligned with intentional zoning and national development policy.
-
 
 # 6. References
 
