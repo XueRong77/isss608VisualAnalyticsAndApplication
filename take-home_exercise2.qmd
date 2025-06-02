@@ -1,0 +1,258 @@
+---
+title: "Tracing the Rise of Szymon Pyć and Predicting the Next Breakout Star"
+author: "Zhang Xuerong"
+date: "2025-06-01"
+format: html
+editor: visual
+---
+
+## OVERVIEW
+
+### Introduction
+
+In this report, we analyze the rise of artist **Szymon Pyć** using a social network perspective and knowledge graph data provided in Mini-Challenge 1 of the VAST Challenge 2025. The objective is twofold:
+
+1.  Trace the professional rise of Szymon Pyć.
+2.  Predict the next breakout artist using centrality and influence analysis.
+
+### Methodology
+
+We employ a visual analytics and social network analysis framework. This involves constructing and analyzing a graph of artists, albums, and collaborations, and using metrics such as Eigenvector Centrality to detect influential nodes.
+
+## DATA PREPARATION
+
+### Installing and Loading Packages
+
+```{r setup, include=FALSE}
+packages <- c("tidyverse", "tidygraph", "ggraph", "igraph", "lubridate", "readr", "plotly")
+installed <- packages %in% rownames(installed.packages())
+if (any(!installed)) install.packages(packages[!installed])
+lapply(packages, library, character.only = TRUE)
+```
+
+### Loading the Raw Dataset
+
+-   <div>
+
+    ```{r}
+    json_data <- jsonlite::fromJSON("/Users/sharon/OneDrive - Singapore Management University/isss608data/take-home_exercise2/MC1_graph.json")
+
+    # Load and transform nodes and edges together safely
+    nodes <- as_tibble(json_data$nodes) %>%
+      mutate(
+        name = name,  # Keep igraph name field
+        display_name = ifelse(is.na(name), as.character(id), name),
+        label = make.unique(as.character(name))
+      )
+
+
+    edges <- as_tibble(json_data$links)
+    ```
+
+    </div>
+
+### Data Wrangling
+
+```{r}
+# Identify Szymon Pyć's ID
+szymon_id <- nodes %>% filter(display_name == "Szymon Pyć") %>% pull(id)
+
+# Get relevant edges and nodes
+szymon_edges <- edges %>% filter(source == szymon_id | target == szymon_id)
+connected_ids <- union(szymon_edges$source, szymon_edges$target)
+szymon_works <- nodes %>% 
+  filter(id %in% connected_ids, `Node Type` %in% c("Song", "Album")) %>%
+  mutate(release_year = as.numeric(release_date),
+         notoriety_year = as.numeric(notoriety_date))
+```
+
+## VISUALISATION AND ANALYSIS
+
+```{r}
+szymon_summary <- szymon_works %>%
+  group_by(release_year) %>%
+  summarise(
+    total_releases = n(),
+    notable_releases = sum(notable, na.rm = TRUE)
+  )
+```
+
+### Release Timeline
+
+```{r}
+ggplot(szymon_summary, aes(x = release_year)) +
+  geom_col(aes(y = total_releases), fill = "steelblue") +
+  geom_line(aes(y = notable_releases), color = "darkred", size = 1.2) +
+  labs(title = "Szymon Pyć's Release Timeline", y = "Releases", x = "Year") +
+  theme_minimal()
+```
+
+**Insight:** Szymon's notable release activity peaked in 2003, suggesting a breakthrough year. Follow-up years had fewer releases, hinting at a concentrated period of fame.
+
+### Genre Distribution Over Time
+
+```{r}
+genre_trend <- szymon_works %>%
+  filter(!is.na(genre)) %>%
+  group_by(release_year, genre) %>%
+  summarise(count = n())
+
+ggplot(genre_trend, aes(x = release_year, y = count, fill = genre)) +
+  geom_area() +
+  theme_minimal() +
+  labs(title = "Genre Distribution of Szymon Pyć's Work", y = "Count")
+```
+
+**Insight:** This reveals genre shifts and experimentation. Peaks in new genres may signal strategic attempts to reach wider audiences.
+
+### Graph Network Creation and Centrality
+
+```{r}
+# Clean and preserve full node attributes
+nodes_clean <- nodes %>%
+  filter(!is.na(id), id != "", id != "NA") %>%
+  distinct(id, .keep_all = TRUE) %>%
+  mutate(id = as.character(id))
+
+# Confirm presence of Node Type
+glimpse(nodes_clean)
+
+# Revalidate edge structure
+edges_clean <- edges %>%
+  mutate(source = as.character(source), target = as.character(target)) %>%
+  filter(source %in% nodes_clean$id & target %in% nodes_clean$id) %>%
+  filter(source != target) %>%
+  distinct(source, target, .keep_all = TRUE)
+
+glimpse(edges_clean)
+
+# Build graph with extra validation
+library(igraph)
+
+edges_clean <- edges %>%
+  mutate(source = as.character(source), target = as.character(target)) %>%
+  filter(source %in% nodes_clean$id & target %in% nodes_clean$id) %>%
+  filter(!is.na(source), !is.na(target),
+         source != "", target != "",
+         source != "NA", target != "NA") %>%
+  filter(source != target) %>%
+  distinct(source, target, .keep_all = TRUE)
+
+head(edges_clean)
+
+stopifnot(all(edges_clean$source %in% nodes_clean$id))
+stopifnot(all(edges_clean$target %in% nodes_clean$id))
+
+graph_tbl_full <- tbl_graph(nodes = nodes_clean, edges = edges_clean[, c("source", "target")], node_key = "id", directed = TRUE)
+
+head(graph_tbl_full)
+
+# Extract largest weakly connected component
+components <- components(as.igraph(graph_tbl_full), mode = "weak")
+main_component_ids <- V(as.igraph(graph_tbl_full))$name[components$membership == which.max(components$csize)]
+
+graph_tbl <- graph_tbl_full %>%
+  filter(name %in% main_component_ids) %>%
+  mutate(eigen_centrality = centrality_eigen())
+
+head(graph_tbl)
+
+# Top influencers
+top_influencers <- graph_tbl %>% 
+  as_tibble() %>% 
+  filter(`Node Type` == "Person") %>% 
+  arrange(desc(eigen_centrality)) %>% 
+  slice(1:50)
+top_influencers %>% select(display_name, eigen_centrality)
+
+# Visualize top 5% most central nodes
+top_threshold <- quantile(graph_tbl %>% as_tibble() %>% pull(eigen_centrality), 0.95, na.rm = TRUE)
+top_subgraph <- graph_tbl %>% filter(eigen_centrality >= top_threshold)
+
+graph_central_plot <- ggraph(top_subgraph, layout = "fr") +
+  geom_edge_link(alpha = 0.2) +
+  geom_node_point(aes(size = eigen_centrality, color = `Node Type`)) +
+  geom_node_text(aes(label = display_name), repel = TRUE, size = 2.5) +
+  theme_void() +
+  labs(title = "Top 5% Most Influential Nodes")
+
+print(graph_central_plot)
+
+```
+
+**Insight:** High eigenvector scores reflect influence in the music graph. These individuals often collaborate or get referenced frequently.
+
+### Visualization of Szymon Pyć's Ego Network
+
+```{r}
+szymon_ego <- graph_tbl_full %>% convert(to_subgraph, name %in% connected_ids)
+
+# DIAGNOSTICS
+cat("Szymon Ego Node Count:", nrow(as_tibble(szymon_ego)), "
+")
+szymon_ego <- graph_tbl %>% convert(to_subgraph, id %in% connected_ids)
+
+graph_plot <- ggraph(szymon_ego, layout = "fr") +
+  geom_edge_link(alpha = 0.3) +
+  geom_node_point(aes(color = `Node Type`), size = 3) +
+  geom_node_text(aes(label = display_name), repel = TRUE, size = 2.5) +
+  theme_void() +
+  labs(title = "Szymon Pyć's Collaboration and Influence Network")
+
+print(graph_plot)
+```
+
+## PREDICTING THE NEXT BREAKOUT STAR
+
+```{r}
+# Check which node types are present in the graph
+graph_tbl %>%
+  as_tibble() %>%
+  count(`Node Type`)
+
+# DIAGNOSTICS
+top_new_df <- graph_tbl %>%
+  as_tibble() %>%
+  filter(`Node Type` == "Person") %>%
+  arrange(desc(eigen_centrality)) %>%
+  slice(1:10)
+
+head(top_new_df)
+summary(top_new_df$eigen_centrality)
+
+ggplot(top_new_df, aes(x = reorder(display_name, eigen_centrality), y = eigen_centrality)) +
+  geom_col(fill = "tomato") +
+  coord_flip() +
+  labs(title = "Top Potential Breakout Artists by Eigenvector Centrality",
+       x = "Artist", y = "Eigenvector Score") +
+  theme_minimal()
+```
+
+### Deep Dive: Breakout Candidate — Kimberly Snyder
+
+```{r}
+k_snyder_id <- nodes %>% filter(display_name == "Kimberly Snyder") %>% pull(id)
+k_snyder_edges <- edges %>% filter(source == k_snyder_id | target == k_snyder_id)
+k_snyder_ids <- union(k_snyder_edges$source, k_snyder_edges$target)
+k_snyder_works <- nodes %>% 
+  filter(id %in% k_snyder_ids, `Node Type` %in% c("Song", "Album")) %>%
+  mutate(release_year = as.numeric(release_date),
+         notoriety_year = as.numeric(notoriety_date))
+
+ggplot(k_snyder_works, aes(x = release_year, fill = notable)) +
+  geom_bar() +
+  labs(title = "Kimberly Snyder's Yearly Output and Notable Work",
+       x = "Release Year", y = "Number of Works") +
+  theme_minimal()
+```
+
+**Insight:** Kimberly Snyder shows strong recent output and rising notoriety. Her central position and prolific work closely mirror Szymon Pyć’s pre-breakout phase.
+
+## LEARNING POINTS
+
+-   **Temporal analysis** highlights Szymon's breakthrough year (2003).
+-   **Genre transitions** reflect stylistic evolution.
+-   **Network metrics** help identify up-and-coming stars.
+-   **Social graph visualization** links influence and collaboration.
+-   **Interactive elements** add engagement and exploration.
+-   **Breakout candidate analysis** offers grounded prediction.

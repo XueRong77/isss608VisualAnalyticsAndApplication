@@ -1,7 +1,7 @@
 ---
 title: "Take-home Exercise 1: Exploring Singapore Demographics (2024)"
 author: "Zhang Xuerong"
-format: docx
+format: html
 editor: visual
 ---
 

@@ -34,7 +34,9 @@ website:
       - text: "Take-home Exercises"
         menu:
           - text: "Take-home Exercises 1"
-            href: "take-home_exercise1.qmd"  
+            href: "take-home_exercise1.qmd"
+          - text: "Take-home Exercises 2"
+            href: "take-home_exercise2.qmd"  
     right: 
       - text: "Home"
         href: index.html
